@@ -1,5 +1,6 @@
 import React from 'react'
 import { weeks } from '../data/weeks'
+import { WeekIcon, ClockIcon, ShakeIcon, CalendarIcon } from '../icons'
 import { WaterWidget } from './WaterTracker'
 import DailyChecklist, { getTasksForWeek } from './DailyChecklist'
 import { useLocalStorage, todayKey, daysBetween } from '../hooks/useLocalStorage'
@@ -36,7 +37,7 @@ export default function Dashboard({ currentWeek, startDate, onNavigate, onChange
   return (
     <div className="view">
       <div className="hero-week">
-        <div className="big-icon">{week.icon}</div>
+        <div className="big-icon"><WeekIcon name={week.icon} size={52} /></div>
         <div style={{ flex: 1 }}>
           <div className="hero-label">שבוע {week.number} · יום {dayOfWeek}</div>
           <h2>{week.title}</h2>
@@ -69,7 +70,9 @@ export default function Dashboard({ currentWeek, startDate, onNavigate, onChange
           onClick={() => onNavigate('window')}
         >
           <div className="space-between">
-            <h3 className="card-title" style={{ margin: 0 }}>⏰ חלון אכילה</h3>
+            <h3 className="card-title card-title-with-icon" style={{ margin: 0 }}>
+              <ClockIcon size={22} /> חלון אכילה
+            </h3>
             <span className="link-btn">פתח ←</span>
           </div>
           <p className="muted" style={{ marginTop: 8 }}>
@@ -84,7 +87,9 @@ export default function Dashboard({ currentWeek, startDate, onNavigate, onChange
         onClick={() => onNavigate('shake')}
       >
         <div className="space-between">
-          <h3 className="card-title" style={{ margin: 0, color: 'white' }}>🥤 השייק הלפטיני</h3>
+          <h3 className="card-title card-title-with-icon" style={{ margin: 0, color: 'white' }}>
+            <ShakeIcon size={22} /> השייק הלפטיני
+          </h3>
           <span style={{ color: 'white' }}>←</span>
         </div>
         <p style={{ marginTop: 8, opacity: 0.95, fontSize: 13 }}>
@@ -93,7 +98,9 @@ export default function Dashboard({ currentWeek, startDate, onNavigate, onChange
       </div>
 
       <div className="card">
-        <h3 className="card-title">📅 תאריך התחלה</h3>
+        <h3 className="card-title card-title-with-icon">
+          <CalendarIcon size={22} /> תאריך התחלה
+        </h3>
         <p className="muted">{startDate || 'לא הוגדר'} · יום {totalDays}</p>
         <button className="btn-secondary" onClick={onChangeStart}>שנה תאריך התחלה</button>
       </div>

@@ -7,7 +7,7 @@ export const weeks = [
     number: 1,
     title: 'שבוע ראשון',
     theme: 'מים — ההצפה הלפטינית',
-    icon: '💧',
+    icon: 'water',
     color: '#3B82F6',
     missionTasks: [
       {
@@ -56,7 +56,7 @@ export const weeks = [
     number: 2,
     title: 'שבוע שני',
     theme: 'ירקות מנקים',
-    icon: '🥦',
+    icon: 'broccoli',
     color: '#10B981',
     missionTasks: [
       {
@@ -95,7 +95,7 @@ export const weeks = [
     number: 3,
     title: 'שבוע שלישי',
     theme: 'ניקוי סוכר וקמח',
-    icon: '🚫🍞',
+    icon: 'no-wheat',
     color: '#EF4444',
     missionTasks: [
       {
@@ -140,7 +140,7 @@ export const weeks = [
     number: 4,
     title: 'שבוע רביעי',
     theme: 'ניקוי פחמימות גרליניות + פרי אחד ביום',
-    icon: '🍠',
+    icon: 'tubers',
     color: '#F97316',
     missionTasks: [
       {
@@ -194,7 +194,7 @@ export const weeks = [
     number: 5,
     title: 'שבוע חמישי',
     theme: 'ניקוי שומנים מרוכזים עודפים',
-    icon: '🥑',
+    icon: 'avocado',
     color: '#84CC16',
     missionTasks: [
       {
@@ -237,7 +237,7 @@ export const weeks = [
     number: 6,
     title: 'שבוע שישי',
     theme: 'חלון אכילה — צום יומי 12–16 שעות',
-    icon: '⏰',
+    icon: 'clock',
     color: '#8B5CF6',
     missionTasks: [
       {
@@ -268,7 +268,7 @@ export const weeks = [
     number: 7,
     title: 'שבוע שביעי',
     theme: '2–3 ארוחות משביעות + ארוחת ביניים',
-    icon: '🍽️',
+    icon: 'meals',
     color: '#F59E0B',
     missionTasks: [
       {
@@ -297,8 +297,8 @@ export const weeks = [
     number: 8,
     title: 'מסלולי החיטוב — שבוע תשיעי ואילך',
     theme: 'שמירה: For Life / Leptin — מסלול מתון או מהיר',
-    icon: '🏁',
-    color: '#6B46C1',
+    icon: 'finish',
+    color: '#0070EA',
     missionTasks: [
       {
         id: 'w8-choose-path',

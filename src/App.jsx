@@ -9,15 +9,16 @@ import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
 import LeptinShake from './components/LeptinShake'
 import InstallAppButton from './components/InstallAppButton'
+import { TabIcon, SparklesIcon } from './icons'
 
 const TABS = [
-  { id: 'home',    label: 'בית',      icon: '🏠' },
-  { id: 'weeks',   label: 'שבועות',  icon: '📅' },
-  { id: 'water',   label: 'מים',     icon: '💧' },
-  { id: 'recipes', label: 'מתכונים', icon: '🍳' },
-  { id: 'foods',   label: 'מאכלים',  icon: '🥗' },
-  { id: 'window',  label: 'חלון',    icon: '⏰' },
-  { id: 'sos',     label: 'SOS',     icon: '🆘' }
+  { id: 'home',    label: 'בית' },
+  { id: 'weeks',   label: 'שבועות' },
+  { id: 'water',   label: 'מים' },
+  { id: 'recipes', label: 'מתכונים' },
+  { id: 'foods',   label: 'מאכלים' },
+  { id: 'window',  label: 'חלון' },
+  { id: 'sos',     label: 'SOS' }
 ]
 
 export default function App() {
@@ -100,7 +101,7 @@ export default function App() {
             className={`tab-btn ${tab === t.id ? 'active' : ''}`}
             onClick={() => navigate(t.id)}
           >
-            <span className="tab-icon">{t.icon}</span>
+            <span className="tab-icon"><TabIcon tabId={t.id} /></span>
             <span>{t.label}</span>
           </button>
         ))}
@@ -116,10 +117,10 @@ function Onboarding({ initial, onSave, onClose }) {
     <div className="app">
       <InstallAppButton className="install-app-btn-onboarding" />
       <div className="onboarding">
-        <div style={{ fontSize: 54 }}>🌟</div>
-        <h1>ברוך הבא לשיטה הלפטינית</h1>
+        <div className="onboarding-icon-wrap"><SparklesIcon size={52} /></div>
+        <h1>ברוך הבא לחכם הרזים</h1>
         <p>
-          אתגר החיטוב של צביקה עינב בצורה דיגיטלית.
+          חכם הרזים בצורה דיגיטלית.
           בחרו את תאריך ההתחלה — נעקוב אחריכם כל 8 השבועות.
         </p>
         <label style={{ display: 'block', textAlign: 'right', fontSize: 13, color: 'var(--gray-600)', marginBottom: 6 }}>

@@ -59,9 +59,9 @@ function solidPng(width, height, r, g, b) {
   ])
 }
 
-const purple = { r: 107, g: 70, b: 193 }
+const brand = { r: 0, g: 112, b: 234 }
 for (const size of [192, 512]) {
-  const buf = solidPng(size, size, purple.r, purple.g, purple.b)
+  const buf = solidPng(size, size, brand.r, brand.g, brand.b)
   const name = `pwa-${size}x${size}.png`
   fs.mkdirSync(publicDir, { recursive: true })
   fs.writeFileSync(path.join(publicDir, name), buf)

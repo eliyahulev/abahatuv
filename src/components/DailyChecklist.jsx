@@ -1,5 +1,6 @@
 import React from 'react'
 import { weeks } from '../data/weeks'
+import { CheckMarkIcon } from '../icons'
 import { useLocalStorage, todayKey } from '../hooks/useLocalStorage'
 
 // Accumulate all tasks from week 1 up through the current week
@@ -42,7 +43,7 @@ export default function DailyChecklist({ weekNumber }) {
             onClick={() => toggle(t.id)}
           >
             <div className="task-check">
-              {done[t.id] && <span>✓</span>}
+              {done[t.id] && <CheckMarkIcon size={14} />}
             </div>
             <div style={{ flex: 1 }}>
               <div className="task-text">{t.short}</div>

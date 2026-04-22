@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { comebackProtocol } from '../data/weeks'
+import { ViewTitle, SosIcon, PenIcon, CalendarIcon } from '../icons'
 
 export default function Emergency() {
   const [notes, setNotes] = useLocalStorage('breakNotes', [])
@@ -19,7 +20,7 @@ export default function Emergency() {
 
   return (
     <div className="view">
-      <h1 className="view-title">🆘 רגע של משבר</h1>
+      <ViewTitle Icon={SosIcon}>רגע של משבר</ViewTitle>
       <p className="view-subtitle">
         3 דרכי ההתמודדות הכי יעילות במצבים של שבירה
       </p>
@@ -54,7 +55,7 @@ export default function Emergency() {
       </div>
 
       <div className="card">
-        <h3 className="card-title">✍️ יומן שבירה</h3>
+        <h3 className="card-title card-title-with-icon"><PenIcon size={22} />יומן שבירה</h3>
         <p className="muted">כתוב לעצמך מה עבד לך טוב ברגע השבירה — כדי לראות לאורך זמן דפוסים.</p>
         <textarea
           value={draft}
@@ -93,7 +94,10 @@ export default function Emergency() {
 
       <div className="card">
         <div className="space-between">
-          <h3 className="card-title" style={{ margin: 0 }}>📅 פרוטוקול הקאמבק (14 ימים)</h3>
+          <h3 className="card-title card-title-with-icon" style={{ margin: 0 }}>
+            <CalendarIcon size={22} />
+            <span>פרוטוקול הקאמבק (14 ימים)</span>
+          </h3>
           <button className="link-btn" onClick={() => setShowCamback(!showCamback)}>
             {showCamback ? 'הסתר' : 'הצג'}
           </button>

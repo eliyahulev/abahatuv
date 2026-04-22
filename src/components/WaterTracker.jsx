@@ -1,5 +1,6 @@
 import React from 'react'
 import { useLocalStorage, todayKey } from '../hooks/useLocalStorage'
+import { ViewTitle, DropletIcon } from '../icons'
 
 const GOAL = 8         // baseline — 2 liters
 const STRETCH = 16     // 4 liters
@@ -29,7 +30,9 @@ export function WaterWidget() {
   return (
     <div className="card">
       <div className="space-between">
-        <h3 className="card-title" style={{ margin: 0 }}>💧 מים היום</h3>
+        <h3 className="card-title card-title-with-icon" style={{ margin: 0 }}>
+          <DropletIcon size={22} />מים היום
+        </h3>
         <span className="badge">{cups} כוסות</span>
       </div>
       <div className="water-progress" style={{ marginTop: 14 }}>
@@ -60,7 +63,7 @@ export default function WaterTracker() {
 
   return (
     <div className="view">
-      <h1 className="view-title">💧 מעקב מים</h1>
+      <ViewTitle Icon={DropletIcon}>מעקב מים</ViewTitle>
       <p className="view-subtitle">
         שבוע 1: 2–4 ליטר מים ליום + 2 כוסות לפני כל ארוחה
       </p>

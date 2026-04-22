@@ -1,11 +1,12 @@
 import React from 'react'
 import { leptinShake } from '../data/shake'
+import { ShakeIcon, LightbulbIcon } from '../icons'
 
 export default function LeptinShake() {
   return (
     <div className="view">
       <div className="shake-hero">
-        <div className="emoji">🥤</div>
+        <div className="shake-hero-icon"><ShakeIcon size={56} /></div>
         <h2>{leptinShake.title}</h2>
         <p>{leptinShake.subtitle}</p>
       </div>
@@ -31,7 +32,7 @@ export default function LeptinShake() {
       </div>
 
       <div className="card">
-        <h3 className="card-title">💡 טיפים להצלחה</h3>
+        <h3 className="card-title card-title-with-icon"><LightbulbIcon size={22} />טיפים להצלחה</h3>
         <ul className="section-list">
           {leptinShake.tips.map((t, i) => <li key={i}>{t}</li>)}
         </ul>

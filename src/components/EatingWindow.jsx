@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { ViewTitle, ClockIcon, StatusDotIcon, LightbulbIcon } from '../icons'
 
 function formatDuration(ms) {
   if (ms < 0) ms = 0
@@ -29,7 +30,7 @@ export default function EatingWindow() {
 
   return (
     <div className="view">
-      <h1 className="view-title">⏰ חלון אכילה</h1>
+      <ViewTitle Icon={ClockIcon}>חלון אכילה</ViewTitle>
       <p className="view-subtitle">
         שבוע 6: בחרו חלון אכילה בן 8–12 שעות ביום.
       </p>
@@ -44,7 +45,10 @@ export default function EatingWindow() {
         )}
         {isEating && (
           <>
-            <div className="window-state">בחלון אכילה 🟢</div>
+            <div className="window-state window-state-with-dot">
+              <StatusDotIcon color="#22c55e" />
+              <span>בחלון אכילה</span>
+            </div>
             <div className="window-countdown">{formatDuration(endTime - now)}</div>
             <div className="window-until">
               נגמר ב-{new Date(endTime).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
@@ -53,7 +57,10 @@ export default function EatingWindow() {
         )}
         {isFasting && (
           <>
-            <div className="window-state">בצום 🟣</div>
+            <div className="window-state window-state-with-dot">
+              <StatusDotIcon color="#7c3aed" />
+              <span>בצום</span>
+            </div>
             <div className="window-countdown">{formatDuration(now - endTime)}</div>
             <div className="window-until">חלון האכילה הסתיים — שתו מים, קפה או תה</div>
           </>
@@ -80,7 +87,7 @@ export default function EatingWindow() {
       </div>
 
       <div className="card">
-        <h3 className="card-title">💡 טיפים</h3>
+        <h3 className="card-title card-title-with-icon"><LightbulbIcon size={22} />טיפים</h3>
         <ul className="section-list">
           <li>נתון לשתות קפה או תה ללא הגבלה במהלך הצום (ללא סוכר וללא חלב).</li>
           <li>הימנעו מנשנושים בלתי פוסקים בזמן חלון האכילה. אכלו ארוחות מסודרות.</li>

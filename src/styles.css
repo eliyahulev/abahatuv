@@ -1,14 +1,18 @@
 :root {
-  --purple-900: #3C1361;
-  --purple-800: #4C1D95;
-  --purple-700: #553C9A;
-  --purple-600: #6B46C1;
-  --purple-500: #805AD5;
-  --purple-400: #9F7AEA;
-  --purple-300: #B794F4;
-  --purple-200: #D6BCFA;
-  --purple-100: #E9D8FD;
-  --purple-50: #FAF5FF;
+  --purple-900: #003A78;
+  --purple-800: #00529C;
+  --purple-700: #0059BB;
+  --purple-600: #0070EA;
+  --purple-500: #3D8FED;
+  --purple-400: #6BABF0;
+  --purple-300: #99C7F4;
+  --purple-200: #C7E3F8;
+  --purple-100: #E3F1FC;
+  --purple-50: #F0F7FF;
+
+  --brand-gradient: linear-gradient(135deg, #0070EA 0%, #0059BB 100%);
+  --brand-surface-shadow: 0 10px 15px -3px rgba(0, 89, 187, 0.2), 0 4px 6px -4px rgba(0, 89, 187, 0.2);
+  --brand-surface-radius: 24px;
 
   --accent-yellow: #F6E05E;
   --accent-yellow-dark: #D69E2E;
@@ -28,8 +32,8 @@
   --white: #FFFFFF;
 
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
-  --shadow: 0 2px 8px rgba(107,70,193,0.08), 0 1px 3px rgba(0,0,0,0.04);
-  --shadow-lg: 0 10px 30px rgba(107,70,193,0.15), 0 4px 10px rgba(0,0,0,0.06);
+  --shadow: 0 2px 8px rgba(0, 89, 187, 0.08), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 30px rgba(0, 89, 187, 0.12), 0 4px 10px rgba(0,0,0,0.06);
 
   --radius-sm: 8px;
   --radius: 14px;
@@ -47,7 +51,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #FAF5FF 0%, #F7FAFC 100%);
+  background: linear-gradient(135deg, #F0F7FF 0%, #F7FAFC 100%);
   font-family: var(--font);
   color: var(--gray-800);
   min-height: 100vh;
@@ -79,11 +83,11 @@ input, textarea, select {
 .app-header {
   padding: 20px 16px 12px;
   text-align: center;
-  background: linear-gradient(135deg, var(--purple-600), var(--purple-800));
+  background: var(--brand-gradient);
   color: white;
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  border-radius: 0 0 var(--brand-surface-radius) var(--brand-surface-radius);
   margin-bottom: 20px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--brand-surface-shadow);
   position: relative;
   overflow: hidden;
 }
@@ -148,11 +152,11 @@ input, textarea, select {
   top: 12px;
   inset-inline-end: 12px;
   z-index: 20;
-  background: rgba(107, 70, 193, 0.12);
+  background: rgba(0, 112, 234, 0.12);
   color: var(--purple-700);
 }
 .install-app-btn-onboarding:active {
-  background: rgba(107, 70, 193, 0.2);
+  background: rgba(0, 112, 234, 0.2);
 }
 .install-app-btn-icon {
   display: block;
@@ -189,7 +193,14 @@ input, textarea, select {
   min-width: 0;
 }
 .tab-btn .tab-icon {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+}
+.tab-btn .tab-icon svg {
+  width: 22px;
+  height: 22px;
 }
 .tab-btn.active {
   color: var(--purple-700);
@@ -221,6 +232,59 @@ input, textarea, select {
   color: var(--gray-600);
   margin-top: -10px;
   margin-bottom: 16px;
+}
+.view-title-icon {
+  flex-shrink: 0;
+}
+.onboarding-icon-wrap {
+  display: flex;
+  justify-content: center;
+  color: var(--purple-600);
+  margin-bottom: 8px;
+}
+.onboarding-icon-wrap svg {
+  width: 52px;
+  height: 52px;
+}
+.chip-label-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab-pill-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.section-title.section-title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.window-state-with-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.recipe-tile-title-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.recipe-tile-fav-star {
+  flex-shrink: 0;
+}
+.recipe-tile-badge-rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.recipe-detail-subh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ===== Cards ===== */
@@ -265,19 +329,25 @@ input, textarea, select {
 /* ===== Dashboard ===== */
 
 .hero-week {
-  background: linear-gradient(135deg, var(--purple-600), var(--purple-400));
+  background: var(--brand-gradient);
   color: white;
-  border-radius: var(--radius-lg);
+  border-radius: var(--brand-surface-radius);
   padding: 20px;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--brand-surface-shadow);
 }
 .hero-week .big-icon {
-  font-size: 48px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-week .big-icon svg {
+  width: 52px;
+  height: 52px;
 }
 .hero-week .hero-label {
   font-size: 12px;
@@ -504,6 +574,10 @@ input, textarea, select {
   font-size: 18px;
   flex-shrink: 0;
 }
+.week-row-number svg {
+  width: 22px;
+  height: 22px;
+}
 .week-row.active .week-row-number {
   background: var(--accent-yellow-dark);
 }
@@ -677,11 +751,16 @@ input, textarea, select {
   color: var(--gray-600);
   flex-wrap: wrap;
 }
-.recipe-meta span {
+.recipe-meta > span {
   background: var(--purple-50);
   padding: 4px 10px;
   border-radius: 12px;
   color: var(--purple-700);
+}
+.recipe-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 .ingredients-list li,
 .steps-list li {
@@ -700,12 +779,13 @@ input, textarea, select {
 /* ===== Eating Window ===== */
 
 .window-timer {
-  background: linear-gradient(135deg, var(--purple-700), var(--purple-500));
+  background: var(--brand-gradient);
   color: white;
   text-align: center;
   padding: 28px 16px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--brand-surface-radius);
   margin-bottom: 16px;
+  box-shadow: var(--brand-surface-shadow);
 }
 .window-state {
   font-size: 14px;
@@ -844,7 +924,7 @@ input, textarea, select {
   overflow: hidden;
 }
 .sos-card.step1 { background: linear-gradient(135deg, #4299E1, #2B6CB0); }
-.sos-card.step2 { background: linear-gradient(135deg, #9F7AEA, #6B46C1); }
+.sos-card.step2 { background: var(--brand-gradient); }
 .sos-card.step3 { background: linear-gradient(135deg, #48BB78, #276749); }
 .sos-step {
   font-size: 12px;
@@ -903,8 +983,15 @@ input, textarea, select {
   margin-bottom: 16px;
   text-align: center;
 }
-.shake-hero .emoji {
-  font-size: 60px;
+.shake-hero-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.shake-hero-icon svg {
+  width: 56px;
+  height: 56px;
+  opacity: 0.95;
 }
 .shake-hero h2 {
   margin: 4px 0 4px;

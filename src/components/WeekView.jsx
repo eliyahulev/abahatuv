@@ -1,5 +1,17 @@
 import React, { useState } from 'react'
 import { weeks, sixPrinciples } from '../data/weeks'
+import {
+  WeekIcon,
+  TargetIcon,
+  DnaIcon,
+  LightbulbIcon,
+  BanIcon,
+  CheckCircleIcon,
+  CupIcon,
+  CookIcon,
+  ShakeIcon,
+  TrophyIcon
+} from '../icons'
 
 export default function WeekView({ currentWeek, onOpenRecipe }) {
   const [expanded, setExpanded] = useState(currentWeek || 1)
@@ -20,7 +32,9 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
               className="week-row-header"
               onClick={() => setExpanded(isExpanded ? null : w.id)}
             >
-              <div className="week-row-number">{w.icon || w.number}</div>
+              <div className="week-row-number">
+                {w.icon ? <WeekIcon name={w.icon} size={22} /> : w.number}
+              </div>
               <div className="week-row-body">
                 <div className="week-row-title">
                   {w.title}
@@ -33,7 +47,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
             {isExpanded && (
               <div className="week-row-content">
-                <div className="section-title">🎯 משימות השבוע</div>
+                <div className="section-title section-title-with-icon"><TargetIcon size={18} /><span>משימות השבוע</span></div>
                 <ul className="section-list">
                   {w.missionTasks.map(t => (
                     <li key={t.id}>
@@ -45,7 +59,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
                 {w.physiology && w.physiology.length > 0 && (
                   <>
-                    <div className="section-title">🧬 חשיבות המשימה הראתה הפיזיולוגית</div>
+                    <div className="section-title section-title-with-icon"><DnaIcon size={18} /><span>חשיבות המשימה הראתה הפיזיולוגית</span></div>
                     <ul className="section-list">
                       {w.physiology.map((p, i) => <li key={i}>{p}</li>)}
                     </ul>
@@ -54,7 +68,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
                 {w.tips && w.tips.length > 0 && (
                   <>
-                    <div className="section-title">💡 דגשים נוספים לגבי השבוע</div>
+                    <div className="section-title section-title-with-icon"><LightbulbIcon size={18} /><span>דגשים נוספים לגבי השבוע</span></div>
                     <ul className="section-list">
                       {w.tips.map((t, i) => <li key={i}>{t}</li>)}
                     </ul>
@@ -63,7 +77,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
                 {w.newForbidden && w.newForbidden.length > 0 && (
                   <>
-                    <div className="section-title">🚫 נחסם השבוע</div>
+                    <div className="section-title section-title-with-icon"><BanIcon size={18} /><span>נחסם השבוע</span></div>
                     <ul className="section-list forbidden">
                       {w.newForbidden.map((f, i) => <li key={i}>{f}</li>)}
                     </ul>
@@ -72,7 +86,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
                 {w.newAllowed && w.newAllowed.length > 0 && (
                   <>
-                    <div className="section-title">✅ מותר / נוסף השבוע</div>
+                    <div className="section-title section-title-with-icon"><CheckCircleIcon size={18} /><span>מותר / נוסף השבוע</span></div>
                     <ul className="section-list">
                       {w.newAllowed.map((a, i) => <li key={i}>{a}</li>)}
                     </ul>
@@ -81,7 +95,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
                 {w.allowedDrinks && (
                   <>
-                    <div className="section-title">🥤 משקאות מותרים</div>
+                    <div className="section-title section-title-with-icon"><CupIcon size={18} /><span>משקאות מותרים</span></div>
                     <ul className="section-list">
                       {w.allowedDrinks.map((d, i) => <li key={i}>{d}</li>)}
                     </ul>
@@ -90,7 +104,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
                 {w.forbiddenDrinks && (
                   <>
-                    <div className="section-title">❌ משקאות לא מומלצים</div>
+                    <div className="section-title section-title-with-icon"><BanIcon size={18} /><span>משקאות לא מומלצים</span></div>
                     <ul className="section-list forbidden">
                       {w.forbiddenDrinks.map((d, i) => <li key={i}>{d}</li>)}
                     </ul>
@@ -99,7 +113,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
 
                 {w.recipeIds && w.recipeIds.length > 0 && (
                   <>
-                    <div className="section-title">🍳 מתכונים לשבוע</div>
+                    <div className="section-title section-title-with-icon"><CookIcon size={18} /><span>מתכונים לשבוע</span></div>
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                       {w.recipeIds.map(rid => (
                         <button
@@ -107,7 +121,11 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
                           className="chip"
                           onClick={() => onOpenRecipe && onOpenRecipe(rid)}
                         >
-                          {rid === 'leptin-shake' ? '🥤 השייק הלפטיני' : recipeTitle(rid)}
+                          {rid === 'leptin-shake' ? (
+                            <span className="chip-label-with-icon"><ShakeIcon size={16} /><span>השייק הלפטיני</span></span>
+                          ) : (
+                            recipeTitle(rid)
+                          )}
                         </button>
                       ))}
                     </div>
@@ -120,7 +138,7 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
       })}
 
       <div className="card" style={{ marginTop: 20 }}>
-        <h2 className="card-title">🏆 6 עקרונות-העל לשמירה For Life</h2>
+        <h2 className="card-title card-title-with-icon"><TrophyIcon size={24} /><span>6 עקרונות-העל לשמירה For Life</span></h2>
         <p className="muted">לאחר סיום 8 השבועות — אלו הכלים לשמר את ההישגים לטווח ארוך.</p>
         {sixPrinciples.map((p, i) => (
           <div key={i} style={{ padding: '10px 0', borderBottom: i < sixPrinciples.length - 1 ? '1px solid var(--gray-200)' : 'none' }}>

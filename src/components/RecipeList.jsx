@@ -2,13 +2,14 @@ import React, { useState, useMemo } from 'react'
 import { recipes } from '../data/recipes'
 import { leptinShake } from '../data/shake'
 import RecipeDetail from './RecipeDetail'
+import { ViewTitle, CookIcon, StarIcon, ShakeIcon } from '../icons'
 
 const allRecipes = [leptinShake, ...recipes]
 
 const filters = [
   { id: 'all', label: 'הכל' },
-  { id: 'favorites', label: '⭐ מועדפים' },
-  { id: 'shake', label: '🥤 שייק' },
+  { id: 'favorites', label: 'מועדפים', Icon: StarIcon },
+  { id: 'shake', label: 'שייק', Icon: ShakeIcon },
   { id: 3, label: 'שבוע 3' },
   { id: 4, label: 'שבוע 4' },
   { id: 5, label: 'שבוע 5' },
@@ -44,7 +45,7 @@ export default function RecipeList({ openRecipeId, setOpenRecipeId, favorites, t
 
   return (
     <div className="view">
-      <h1 className="view-title">🍳 מתכונים</h1>
+      <ViewTitle Icon={CookIcon}>מתכונים</ViewTitle>
       <p className="view-subtitle">{allRecipes.length} מתכונים מנצחים מהמדריך</p>
 
       <input
@@ -61,7 +62,10 @@ export default function RecipeList({ openRecipeId, setOpenRecipeId, favorites, t
             className={`chip ${filter === f.id ? 'active' : ''}`}
             onClick={() => setFilter(f.id)}
           >
-            {f.label}
+            <span className="chip-label-with-icon">
+              {f.Icon && <f.Icon size={16} />}
+              <span>{f.label}</span>
+            </span>
           </button>
         ))}
       </div>
@@ -82,11 +86,16 @@ export default function RecipeList({ openRecipeId, setOpenRecipeId, favorites, t
                 <div className="recipe-tile-week">שבוע {r.week}</div>
               )}
               {r.id === 'leptin-shake' && (
-                <div className="recipe-tile-week" style={{ color: 'var(--accent-green)' }}>⭐ המומלץ</div>
+                <div className="recipe-tile-week recipe-tile-badge-rec" style={{ color: 'var(--accent-green)' }}>
+                  <StarIcon size={12} filled />
+                  <span>המומלץ</span>
+                </div>
               )}
               <div className="recipe-tile-title">
-                {favorites.includes(r.id) && '⭐ '}
-                {r.title}
+                <span className="recipe-tile-title-inner">
+                  {favorites.includes(r.id) && <StarIcon size={14} filled className="recipe-tile-fav-star" />}
+                  {r.title}
+                </span>
               </div>
               {r.category && <div className="recipe-tile-cat">{r.category}</div>}
             </div>

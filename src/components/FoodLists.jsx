@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { ViewTitle, SaladIcon, CheckCircleIcon, BanIcon, CupIcon } from '../icons'
 import {
   vegetables,
   notVegetables,
@@ -15,22 +16,22 @@ export default function FoodLists() {
 
   return (
     <div className="view">
-      <h1 className="view-title">🥗 מאכלים</h1>
+      <ViewTitle Icon={SaladIcon}>מאכלים</ViewTitle>
       <p className="view-subtitle">רשימות מאושרות ואסורות לפי שלב בתוכנית</p>
 
       <div className="tabs">
         <div
           className={`tab-pill ${tab === 'allowed' ? 'active' : ''}`}
           onClick={() => setTab('allowed')}
-        >✅ מותר</div>
+        ><span className="tab-pill-inner"><CheckCircleIcon size={18} /><span>מותר</span></span></div>
         <div
           className={`tab-pill ${tab === 'forbidden' ? 'active' : ''}`}
           onClick={() => setTab('forbidden')}
-        >🚫 אסור</div>
+        ><span className="tab-pill-inner"><BanIcon size={18} /><span>אסור</span></span></div>
         <div
           className={`tab-pill ${tab === 'drinks' ? 'active' : ''}`}
           onClick={() => setTab('drinks')}
-        >🥤 משקאות</div>
+        ><span className="tab-pill-inner"><CupIcon size={18} /><span>משקאות</span></span></div>
       </div>
 
       {tab === 'allowed' && (

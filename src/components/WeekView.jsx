@@ -1,0 +1,165 @@
+import React, { useState } from 'react'
+import { weeks, sixPrinciples } from '../data/weeks'
+
+export default function WeekView({ currentWeek, onOpenRecipe }) {
+  const [expanded, setExpanded] = useState(currentWeek || 1)
+
+  return (
+    <div className="view">
+      <h1 className="view-title">שבועות התוכנית</h1>
+      <p className="view-subtitle">
+        לחץ על שבוע כדי לראות משימות, מדע, טיפים ומתכונים.
+      </p>
+
+      {weeks.map(w => {
+        const isExpanded = expanded === w.id
+        const isCurrent = currentWeek === w.number
+        return (
+          <div key={w.id} className={`week-row ${isExpanded ? 'expanded' : ''} ${isCurrent ? 'active' : ''}`}>
+            <div
+              className="week-row-header"
+              onClick={() => setExpanded(isExpanded ? null : w.id)}
+            >
+              <div className="week-row-number">{w.icon || w.number}</div>
+              <div className="week-row-body">
+                <div className="week-row-title">
+                  {w.title}
+                  {isCurrent && <span className="badge" style={{ marginRight: 8 }}>השבוע שלך</span>}
+                </div>
+                <div className="week-row-theme">{w.theme}</div>
+              </div>
+              <div className="week-row-chevron">‹</div>
+            </div>
+
+            {isExpanded && (
+              <div className="week-row-content">
+                <div className="section-title">🎯 משימות השבוע</div>
+                <ul className="section-list">
+                  {w.missionTasks.map(t => (
+                    <li key={t.id}>
+                      <strong>{t.short}</strong>
+                      {t.long && <div className="task-details">{t.long}</div>}
+                    </li>
+                  ))}
+                </ul>
+
+                {w.physiology && w.physiology.length > 0 && (
+                  <>
+                    <div className="section-title">🧬 חשיבות המשימה הראתה הפיזיולוגית</div>
+                    <ul className="section-list">
+                      {w.physiology.map((p, i) => <li key={i}>{p}</li>)}
+                    </ul>
+                  </>
+                )}
+
+                {w.tips && w.tips.length > 0 && (
+                  <>
+                    <div className="section-title">💡 דגשים נוספים לגבי השבוע</div>
+                    <ul className="section-list">
+                      {w.tips.map((t, i) => <li key={i}>{t}</li>)}
+                    </ul>
+                  </>
+                )}
+
+                {w.newForbidden && w.newForbidden.length > 0 && (
+                  <>
+                    <div className="section-title">🚫 נחסם השבוע</div>
+                    <ul className="section-list forbidden">
+                      {w.newForbidden.map((f, i) => <li key={i}>{f}</li>)}
+                    </ul>
+                  </>
+                )}
+
+                {w.newAllowed && w.newAllowed.length > 0 && (
+                  <>
+                    <div className="section-title">✅ מותר / נוסף השבוע</div>
+                    <ul className="section-list">
+                      {w.newAllowed.map((a, i) => <li key={i}>{a}</li>)}
+                    </ul>
+                  </>
+                )}
+
+                {w.allowedDrinks && (
+                  <>
+                    <div className="section-title">🥤 משקאות מותרים</div>
+                    <ul className="section-list">
+                      {w.allowedDrinks.map((d, i) => <li key={i}>{d}</li>)}
+                    </ul>
+                  </>
+                )}
+
+                {w.forbiddenDrinks && (
+                  <>
+                    <div className="section-title">❌ משקאות לא מומלצים</div>
+                    <ul className="section-list forbidden">
+                      {w.forbiddenDrinks.map((d, i) => <li key={i}>{d}</li>)}
+                    </ul>
+                  </>
+                )}
+
+                {w.recipeIds && w.recipeIds.length > 0 && (
+                  <>
+                    <div className="section-title">🍳 מתכונים לשבוע</div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      {w.recipeIds.map(rid => (
+                        <button
+                          key={rid}
+                          className="chip"
+                          onClick={() => onOpenRecipe && onOpenRecipe(rid)}
+                        >
+                          {rid === 'leptin-shake' ? '🥤 השייק הלפטיני' : recipeTitle(rid)}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      <div className="card" style={{ marginTop: 20 }}>
+        <h2 className="card-title">🏆 6 עקרונות-העל לשמירה For Life</h2>
+        <p className="muted">לאחר סיום 8 השבועות — אלו הכלים לשמר את ההישגים לטווח ארוך.</p>
+        {sixPrinciples.map((p, i) => (
+          <div key={i} style={{ padding: '10px 0', borderBottom: i < sixPrinciples.length - 1 ? '1px solid var(--gray-200)' : 'none' }}>
+            <div style={{ fontWeight: 700, color: 'var(--purple-700)', marginBottom: 4 }}>
+              {i + 1}. {p.title}
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--gray-700)', lineHeight: 1.55 }}>{p.body}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// small helper — won't import recipes here to keep chunk small
+function recipeTitle(id) {
+  const map = {
+    'cocoa-oatmeal': 'דייסת קוואקר שוקולדית',
+    'oven-salmon': 'סלמון בתנור',
+    'leptin-shakshuka': 'שקשוקה לפטינית',
+    'tahini-bread': 'לחם טחינה',
+    'artichoke-chips': 'צ\'יפס ארטישוק',
+    'lentil-stew': 'תבשיל עדשים',
+    'cauliflower-rice': '"אורז" כרובית',
+    'cloud-bread': 'לחם ענן',
+    'argentinian-meat-bread': 'לחם בשר ארגנטינאי',
+    'avocado-eggs-pan': 'חביתת מלכים ואבוקדו',
+    'oatmeal-ricotta': 'מעדן שיבולת שועל',
+    'simple-tofu': 'טופו פשוט',
+    'coconut-curry': 'קארי מהמם',
+    'leptin-bean-soup': 'מרק שעועית לפטיני',
+    'spinach-pastida': 'פשטידת תרד',
+    'home-ketchup': 'קטשופ ביתי',
+    'tofu-chicken-spinach': 'טופו/עוף ותרד',
+    'tomato-eggs': 'טונה וירקות',
+    'oatmeal-yogurt': 'שיבולת שועל ויוגורט',
+    'iced-coffee': 'אייס קפה',
+    'cocoa-shock': 'שוקו מפתיע',
+    'roasted-cauliflower': 'כרובית בתנור'
+  }
+  return map[id] || id
+}

@@ -1,0 +1,56 @@
+import React from 'react'
+import { weeks } from '../data/weeks'
+import { useLocalStorage, todayKey } from '../hooks/useLocalStorage'
+
+// Accumulate all tasks from week 1 up through the current week
+export function getTasksForWeek(weekNumber) {
+  const tasks = []
+  for (const w of weeks) {
+    if (w.number <= weekNumber) {
+      for (const t of w.missionTasks) {
+        tasks.push({ ...t, weekNumber: w.number })
+      }
+    }
+  }
+  return tasks
+}
+
+export default function DailyChecklist({ weekNumber }) {
+  const date = todayKey()
+  const [done, setDone] = useLocalStorage(`tasks:${date}`, {})
+  const tasks = getTasksForWeek(weekNumber)
+
+  const toggle = (id) => {
+    setDone(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const completedCount = tasks.filter(t => done[t.id]).length
+
+  return (
+    <div className="card">
+      <div className="space-between" style={{ marginBottom: 10 }}>
+        <h3 className="card-title" style={{ margin: 0 }}>
+          משימות היום
+        </h3>
+        <span className="badge">{completedCount}/{tasks.length}</span>
+      </div>
+      <ul className="task-list">
+        {tasks.map(t => (
+          <li
+            key={t.id}
+            className={`task-item ${done[t.id] ? 'done' : ''}`}
+            onClick={() => toggle(t.id)}
+          >
+            <div className="task-check">
+              {done[t.id] && <span>✓</span>}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="task-text">{t.short}</div>
+              {t.long && <div className="task-details">{t.long}</div>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}

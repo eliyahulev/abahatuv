@@ -1,6 +1,6 @@
-# אתגר החיטוב — השיטה הלפטינית
+# חכם הרזים
 
-Interactive React companion app for Tzvika Einav's Leptin Diet Challenge (אתגר החיטוב בשיטה הלפטינית).
+Interactive React companion app for Tzvika Einav's Leptin Diet Challenge
 
 ## Features
 

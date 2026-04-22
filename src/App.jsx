@@ -8,6 +8,7 @@ import FoodLists from './components/FoodLists'
 import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
 import LeptinShake from './components/LeptinShake'
+import InstallAppButton from './components/InstallAppButton'
 
 const TABS = [
   { id: 'home',    label: 'בית',      icon: '🏠' },
@@ -59,8 +60,9 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>אתגר החיטוב — השיטה הלפטינית</h1>
-        <div className="sub">צביקה עינב · שבוע {currentWeek}/8</div>
+        <InstallAppButton className="install-app-btn-header" />
+        <h1> חכם הרזים</h1>
+        <div className="sub">  שבוע {currentWeek}/8</div>
       </header>
 
       {tab === 'home' && (
@@ -112,6 +114,7 @@ function Onboarding({ initial, onSave, onClose }) {
 
   return (
     <div className="app">
+      <InstallAppButton className="install-app-btn-onboarding" />
       <div className="onboarding">
         <div style={{ fontSize: 54 }}>🌟</div>
         <h1>ברוך הבא לשיטה הלפטינית</h1>

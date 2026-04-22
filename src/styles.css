@@ -122,6 +122,42 @@ input, textarea, select {
   z-index: 1;
 }
 
+.install-app-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transition: background 0.15s ease;
+}
+.install-app-btn:active {
+  background: rgba(255, 255, 255, 0.32);
+}
+.install-app-btn-header {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 10px;
+  z-index: 2;
+}
+.install-app-btn-onboarding {
+  position: fixed;
+  top: 12px;
+  inset-inline-end: 12px;
+  z-index: 20;
+  background: rgba(107, 70, 193, 0.12);
+  color: var(--purple-700);
+}
+.install-app-btn-onboarding:active {
+  background: rgba(107, 70, 193, 0.2);
+}
+.install-app-btn-icon {
+  display: block;
+}
+
 /* ===== Bottom Tab Bar ===== */
 
 .tab-bar {
@@ -512,7 +548,7 @@ input, textarea, select {
   margin: 0;
 }
 .section-list li {
-  padding: 8px 0 8px 20px;
+  padding: 8px 28px 8px 20px;
   font-size: 14px;
   line-height: 1.55;
   position: relative;
@@ -521,8 +557,9 @@ input, textarea, select {
 .section-list li::before {
   content: '✓';
   position: absolute;
-  right: 0;
+  right: 6px;
   top: 7px;
+  padding: 0 2px;
   color: var(--purple-600);
   font-weight: 700;
 }

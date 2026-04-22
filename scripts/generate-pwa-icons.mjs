@@ -6,6 +6,9 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const publicDir = path.join(__dirname, '..', 'public')
 
+const BR = { r: 0, g: 112, b: 234 }
+const BR2 = { r: 0, g: 89, b: 187 }
+
 const crcTable = (() => {
   const t = new Uint32Array(256)
   for (let n = 0; n < 256; n++) {
@@ -31,13 +34,72 @@ function chunk(type, data) {
   return Buffer.concat([len, typeBuf, data, crc])
 }
 
-function solidPng(width, height, r, g, b) {
+function lerp(a, b, t) {
+  return Math.round(a + (b - a) * t)
+}
+
+function gradientAt(x, y, w, h) {
+  const t = Math.min(1, Math.max(0, (x / w + y / h) * 0.55))
+  return {
+    r: lerp(BR.r, BR2.r, t),
+    g: lerp(BR.g, BR2.g, t),
+    b: lerp(BR.b, BR2.b, t)
+  }
+}
+
+const DROP_POLY = [
+  [0, -0.58],
+  [0.22, -0.18],
+  [0.38, 0.12],
+  [0.24, 0.46],
+  [0, 0.52],
+  [-0.24, 0.46],
+  [-0.38, 0.12],
+  [-0.22, -0.18]
+]
+
+function pointInDrop(u, v) {
+  let inside = false
+  const n = DROP_POLY.length
+  for (let i = 0, j = n - 1; i < n; j = i++) {
+    const xi = DROP_POLY[i][0]
+    const yi = DROP_POLY[i][1]
+    const xj = DROP_POLY[j][0]
+    const yj = DROP_POLY[j][1]
+    const cross = (yi > v) !== (yj > v)
+    if (cross && u < ((xj - xi) * (v - yi)) / (yj - yi + 1e-9) + xi) inside = !inside
+  }
+  return inside
+}
+
+function iconPng(width, height) {
   const raw = []
-  const rowLen = 1 + width * 3
+  const cx = width / 2
+  const cy = height / 2
+  const scale = Math.min(width, height) * 0.38
+
   for (let y = 0; y < height; y++) {
     raw.push(0)
-    for (let x = 0; x < width; x++) raw.push(r, g, b)
+    for (let x = 0; x < width; x++) {
+      const u = (x - cx) / scale
+      const v = (y - cy) / scale
+      let r
+      let g
+      let b
+      if (pointInDrop(u, v)) {
+        r = 255
+        g = 255
+        b = 255
+      } else {
+        const bg = gradientAt(x, y, width - 1, height - 1)
+        r = bg.r
+        g = bg.g
+        b = bg.b
+      }
+      raw.push(r, g, b)
+    }
   }
+
   const rawBuf = Buffer.from(raw)
   const compressed = zlib.deflateSync(rawBuf, { level: 9 })
 
@@ -59,9 +121,8 @@ function solidPng(width, height, r, g, b) {
   ])
 }
 
-const brand = { r: 0, g: 112, b: 234 }
 for (const size of [192, 512]) {
-  const buf = solidPng(size, size, brand.r, brand.g, brand.b)
+  const buf = iconPng(size, size)
   const name = `pwa-${size}x${size}.png`
   fs.mkdirSync(publicDir, { recursive: true })
   fs.writeFileSync(path.join(publicDir, name), buf)

@@ -391,63 +391,177 @@ input, textarea, select {
 
 /* ===== Water Tracker ===== */
 
-.water-display {
+.water-tracker-view {
+  padding-bottom: 24px;
+}
+
+.water-ring-panel {
+  background: linear-gradient(180deg, #f0f7ff 0%, #e8f2fc 100%);
+  border-radius: 24px;
+  padding: 28px 16px 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 3px rgba(0, 89, 187, 0.06);
+}
+
+.water-widget-card .water-ring-panel {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+.water-ring-wrap {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 6px;
+}
+
+.water-ring-svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.water-ring-track {
+  stroke: #e2e8f0;
+  stroke-width: 14;
+  fill: none;
+}
+
+.water-ring-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  padding: 24px 16px;
-  background: linear-gradient(180deg, #EBF8FF, #BEE3F8);
-  border-radius: var(--radius-lg);
-  margin-bottom: 16px;
+  pointer-events: none;
+  width: 62%;
 }
-.water-cups-big {
-  font-size: 64px;
-  font-weight: 800;
-  color: var(--accent-blue);
-  line-height: 1;
+
+.water-ring-digits {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 8px;
 }
-.water-cups-label {
-  font-size: 14px;
-  color: var(--gray-700);
-  margin-top: 6px;
-}
-.water-progress {
-  height: 12px;
-  background: rgba(255,255,255,0.6);
-  border-radius: 6px;
-  overflow: hidden;
-  margin: 16px 0 6px;
-}
-.water-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4299E1, #2B6CB0);
-  transition: width 0.3s;
-}
-.water-goal-line {
-  font-size: 12px;
+
+.water-ring-goal {
+  font-size: 19px;
+  font-weight: 600;
   color: var(--gray-600);
 }
 
-.water-controls {
-  display: flex;
+.water-ring-panel--compact .water-ring-goal {
+  font-size: 15px;
+}
+
+.water-ring-slash {
+  font-size: 17px;
+  color: var(--gray-400);
+  font-weight: 500;
+}
+
+.water-ring-current {
+  font-size: 34px;
+  font-weight: 800;
+  color: #0070ea;
+  line-height: 1;
+}
+
+.water-ring-panel--compact .water-ring-current {
+  font-size: 26px;
+}
+
+.water-ring-caption {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.water-ring-panel--compact .water-ring-caption {
+  font-size: 12px;
+}
+
+.water-add-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.water-ring-panel--compact .water-add-cards {
   gap: 10px;
+  margin-top: 4px;
+}
+
+.water-add-card {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 24px;
+  padding: 20px 12px 18px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.water-add-card:active {
+  transform: scale(0.98);
+}
+
+.water-ring-panel--compact .water-add-card {
+  padding: 14px 8px 14px;
+}
+
+.water-add-card-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #e3f1fc;
+  color: #0070ea;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
 }
-.btn-cup {
-  background: var(--accent-blue);
-  color: white;
-  border-radius: var(--radius-lg);
-  padding: 14px 24px;
+
+.water-ring-panel--compact .water-add-card-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 10px;
+}
+
+.water-add-card-title {
   font-size: 16px;
-  font-weight: 700;
-  min-width: 100px;
-  box-shadow: var(--shadow);
-  transition: transform 0.1s;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 4px;
 }
-.btn-cup:active {
-  transform: scale(0.96);
+
+.water-ring-panel--compact .water-add-card-title {
+  font-size: 14px;
 }
-.btn-cup.minus {
-  background: var(--gray-400);
+
+.water-add-card-sub {
+  font-size: 13px;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.water-ring-panel--compact .water-add-card-sub {
+  font-size: 12px;
+}
+
+.water-ring-reset {
+  display: block;
+  margin: 16px auto 0;
+  text-align: center;
 }
 
 .water-chart {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { weeks } from '../data/weeks'
 import { WeekIcon, ClockIcon, ShakeIcon, CalendarIcon } from '../icons'
-import { WaterWidget } from './WaterTracker'
+import { WaterWidget, formatLiters } from './WaterTracker'
 import DailyChecklist, { getTasksForWeek } from './DailyChecklist'
 import { useLocalStorage, todayKey, daysBetween } from '../hooks/useLocalStorage'
 
@@ -47,8 +47,8 @@ export default function Dashboard({ currentWeek, startDate, onNavigate, onChange
 
       <div className="stats-row">
         <div className="stat-card">
-          <div className="stat-value">{waterLog[todayKey()] || 0}</div>
-          <div className="stat-label">כוסות מים</div>
+          <div className="stat-value">{formatLiters((waterLog[todayKey()] || 0) * 0.25)}</div>
+          <div className="stat-label">ליטר מים</div>
         </div>
         <div className="stat-card">
           <div className="stat-value">{doneCount}/{weekTasks.length}</div>

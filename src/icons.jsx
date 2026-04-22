@@ -49,6 +49,45 @@ export function DropletIcon(props) {
   )
 }
 
+export function DropletFilledIcon({ size = 40, className }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      className={className}
+      aria-hidden
+    >
+      <path
+        d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"
+        fill="#0070EA"
+      />
+    </svg>
+  )
+}
+
+export function WaterBottleIcon(props) {
+  return (
+    <Svg {...props}>
+      <path d="M10 3h4a1 1 0 0 1 1 1v1h-6V4a1 1 0 0 1 1-1z" />
+      <rect x="7" y="5" width="10" height="16" rx="2" />
+      <line x1="9" y1="9" x2="15" y2="9" />
+      <line x1="9" y1="12" x2="15" y2="12" />
+    </Svg>
+  )
+}
+
+export function WaterGlassIcon(props) {
+  return (
+    <Svg {...props}>
+      <path d="M8 3h8l-1.2 16.2A2 2 0 0 1 12.8 21h-1.6a2 2 0 0 1-1.99-1.8L8 3z" />
+      <path d="M9 8h6" opacity="0.45" />
+      <path d="M10 14h4" opacity="0.45" />
+    </Svg>
+  )
+}
+
 export function CookIcon(props) {
   return (
     <Svg {...props}>

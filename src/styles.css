@@ -389,6 +389,63 @@ input, textarea, select {
   margin-top: 4px;
 }
 
+/* ===== Motivation Card ===== */
+
+.motivation-card {
+  position: relative;
+  background: linear-gradient(135deg, #F0F7FF 0%, #E3F1FC 100%);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 112, 234, 0.08);
+  overflow: hidden;
+}
+.motivation-card::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  inset-inline-start: -40px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(246, 224, 94, 0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+.motivation-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--purple-700);
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+  position: relative;
+}
+.motivation-card-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-800);
+  line-height: 1.55;
+  margin: 0 0 10px;
+  position: relative;
+}
+.motivation-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--purple-700);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 6px 12px;
+  border-radius: 999px;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.motivation-refresh:active {
+  background: white;
+  transform: scale(0.97);
+}
+
 /* ===== Water Tracker ===== */
 
 .water-tracker-view {
@@ -1085,6 +1142,40 @@ input, textarea, select {
   font-size: 14px;
   width: 100%;
   margin-bottom: 12px;
+}
+
+.gender-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.gender-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius);
+  background: white;
+  color: var(--gray-700);
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.gender-option:active {
+  transform: scale(0.98);
+}
+.gender-option.active {
+  border-color: var(--purple-600);
+  background: var(--purple-50);
+  color: var(--purple-800);
+  box-shadow: 0 0 0 3px rgba(0, 112, 234, 0.12);
+}
+.gender-emoji {
+  font-size: 28px;
+  line-height: 1;
 }
 
 /* ===== Leptin Shake ===== */

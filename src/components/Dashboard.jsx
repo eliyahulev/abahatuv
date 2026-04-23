@@ -1,9 +1,44 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { weeks } from '../data/weeks'
-import { WeekIcon, ClockIcon, ShakeIcon, CalendarIcon } from '../icons'
+import { WeekIcon, ClockIcon, ShakeIcon, CalendarIcon, SparklesIcon } from '../icons'
 import { WaterWidget, formatLiters } from './WaterTracker'
 import DailyChecklist, { getTasksForWeek } from './DailyChecklist'
 import { useLocalStorage, todayKey, daysBetween } from '../hooks/useLocalStorage'
+import { phrasesFor, getPhraseForDay } from '../data/motivation'
+
+function MotivationCard({ gender }) {
+  const [phrase, setPhrase] = useState(() => getPhraseForDay(gender, todayKey()))
+
+  // if gender changes, refresh the daily phrase to the correct list
+  React.useEffect(() => {
+    setPhrase(getPhraseForDay(gender, todayKey()))
+  }, [gender])
+
+  const nextPhrase = () => {
+    const list = phrasesFor(gender)
+    let next = phrase
+    while (next === phrase && list.length > 1) {
+      next = list[Math.floor(Math.random() * list.length)]
+    }
+    setPhrase(next)
+  }
+
+  const refreshLabel = gender === 'male' ? 'תן לי עוד אחת' : 'תני לי עוד אחת'
+
+  return (
+    <div className="motivation-card">
+      <div className="motivation-card-head">
+        <SparklesIcon size={16} />
+        <span>המחשבה של היום</span>
+      </div>
+      <p className="motivation-card-text">{phrase}</p>
+      <button className="motivation-refresh" onClick={nextPhrase}>
+        <SparklesIcon size={14} />
+        <span>{refreshLabel}</span>
+      </button>
+    </div>
+  )
+}
 
 function getStreak(log, goal = 8) {
   // consecutive days ending today (or yesterday) meeting water goal
@@ -20,7 +55,7 @@ function getStreak(log, goal = 8) {
   return streak
 }
 
-export default function Dashboard({ currentWeek, startDate, onNavigate, onChangeStart }) {
+export default function Dashboard({ currentWeek, startDate, gender, onNavigate, onChangeStart }) {
   const [waterLog] = useLocalStorage('waterLog', {})
   const [tasksDone] = useLocalStorage(`tasks:${todayKey()}`, {})
 
@@ -44,6 +79,8 @@ export default function Dashboard({ currentWeek, startDate, onNavigate, onChange
           <div className="theme">{week.theme}</div>
         </div>
       </div>
+
+      <MotivationCard gender={gender} />
 
       <div className="stats-row">
         <div className="stat-card">

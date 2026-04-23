@@ -23,6 +23,7 @@ const TABS = [
 
 export default function App() {
   const [startDate, setStartDate] = useLocalStorage('startDate', null)
+  const [gender, setGender] = useLocalStorage('gender', 'female')
   const [tab, setTab] = useState('home')
   const [openRecipeId, setOpenRecipeId] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('favorites', [])
@@ -52,7 +53,8 @@ export default function App() {
     return (
       <Onboarding
         initial={startDate}
-        onSave={(d) => { setStartDate(d); setShowOnboarding(false) }}
+        initialGender={gender}
+        onSave={(d, g) => { setStartDate(d); setGender(g); setShowOnboarding(false) }}
         onClose={startDate ? () => setShowOnboarding(false) : null}
       />
     )
@@ -70,6 +72,7 @@ export default function App() {
         <Dashboard
           currentWeek={currentWeek}
           startDate={startDate}
+          gender={gender}
           onNavigate={navigate}
           onChangeStart={() => setShowOnboarding(true)}
         />
@@ -110,8 +113,9 @@ export default function App() {
   )
 }
 
-function Onboarding({ initial, onSave, onClose }) {
+function Onboarding({ initial, initialGender, onSave, onClose }) {
   const [date, setDate] = useState(initial || todayKey())
+  const [gender, setGender] = useState(initialGender || 'female')
 
   return (
     <div className="app">
@@ -123,6 +127,29 @@ function Onboarding({ initial, onSave, onClose }) {
           חכם הרזים בצורה דיגיטלית.
           בחרו את תאריך ההתחלה — נעקוב אחריכם כל 8 השבועות.
         </p>
+
+        <label style={{ display: 'block', textAlign: 'right', fontSize: 13, color: 'var(--gray-600)', marginBottom: 6 }}>
+          מגדר:
+        </label>
+        <div className="gender-picker">
+          <button
+            type="button"
+            className={`gender-option ${gender === 'female' ? 'active' : ''}`}
+            onClick={() => setGender('female')}
+          >
+            <span className="gender-emoji" aria-hidden>👩</span>
+            <span>נקבה</span>
+          </button>
+          <button
+            type="button"
+            className={`gender-option ${gender === 'male' ? 'active' : ''}`}
+            onClick={() => setGender('male')}
+          >
+            <span className="gender-emoji" aria-hidden>👨</span>
+            <span>זכר</span>
+          </button>
+        </div>
+
         <label style={{ display: 'block', textAlign: 'right', fontSize: 13, color: 'var(--gray-600)', marginBottom: 6 }}>
           תאריך התחלה:
         </label>
@@ -132,7 +159,7 @@ function Onboarding({ initial, onSave, onClose }) {
           onChange={e => setDate(e.target.value)}
           max={todayKey()}
         />
-        <button className="btn-primary" onClick={() => onSave(date)}>
+        <button className="btn-primary" onClick={() => onSave(date, gender)}>
           {initial ? 'עדכן' : 'התחל!'}
         </button>
         {onClose && (

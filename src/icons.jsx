@@ -296,6 +296,16 @@ export function TargetIcon(props) {
   )
 }
 
+export function DumbbellIcon(props) {
+  return (
+    <Svg {...props}>
+      <path d="M6 6v12M18 6v12" />
+      <path d="M3 9v6M21 9v6" />
+      <path d="M6 12h12" />
+    </Svg>
+  )
+}
+
 export function UserIcon(props) {
   return (
     <Svg {...props}>
@@ -347,6 +357,7 @@ const TAB_ICONS = {
   recipes: CookIcon,
   foods: SaladIcon,
   window: ClockIcon,
+  training: DumbbellIcon,
   sos: SosIcon
 }
 

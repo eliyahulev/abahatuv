@@ -10,6 +10,7 @@ import FoodLists from './components/FoodLists'
 import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
 import LeptinShake from './components/LeptinShake'
+import Training from './components/Training'
 import Profile from './components/Profile'
 import OnboardingWizard from './components/OnboardingWizard'
 import InstallAppButton from './components/InstallAppButton'
@@ -17,13 +18,14 @@ import LoginScreen from './components/LoginScreen'
 import { TabIcon, UserIcon } from './icons'
 
 const TABS = [
-  { id: 'home',    label: 'בית' },
-  { id: 'weeks',   label: 'שבועות' },
-  { id: 'water',   label: 'מים' },
-  { id: 'recipes', label: 'מתכונים' },
-  { id: 'foods',   label: 'מאכלים' },
-  { id: 'window',  label: 'חלון' },
-  { id: 'sos',     label: 'SOS' }
+  { id: 'home',     label: 'בית' },
+  { id: 'weeks',    label: 'שבועות' },
+  { id: 'training', label: 'אימון' },
+  { id: 'water',    label: 'מים' },
+  { id: 'recipes',  label: 'מתכונים' },
+  { id: 'foods',    label: 'מאכלים' },
+  { id: 'window',   label: 'חלון' },
+  { id: 'sos',      label: 'SOS' }
 ]
 
 function BootLoader() {
@@ -137,6 +139,7 @@ function AppAuthed() {
         <WeekView
           currentWeek={currentWeek}
           onOpenRecipe={openRecipe}
+          onNavigate={navigate}
         />
       )}
       {tab === 'water' && <WaterTracker />}
@@ -152,6 +155,7 @@ function AppAuthed() {
       {tab === 'window' && <EatingWindow />}
       {tab === 'sos' && <Emergency />}
       {tab === 'shake' && <LeptinShake />}
+      {tab === 'training' && <Training />}
       {tab === 'profile' && (
         <Profile
           startDate={startDate}

@@ -10,10 +10,15 @@ import {
   CupIcon,
   CookIcon,
   ShakeIcon,
-  TrophyIcon
+  TrophyIcon,
+  DumbbellIcon
 } from '../icons'
+import { trainingPlans } from '../data/training'
+import { useUserField } from '../hooks/useUserData'
 
-export default function WeekView({ currentWeek, onOpenRecipe }) {
+export default function WeekView({ currentWeek, onOpenRecipe, onNavigate }) {
+  const [planId] = useUserField('trainingPlan', 'weights-3')
+  const plan = trainingPlans[planId] || trainingPlans['weights-3']
   const [expanded, setExpanded] = useState(currentWeek || 1)
 
   return (
@@ -22,6 +27,24 @@ export default function WeekView({ currentWeek, onOpenRecipe }) {
       <p className="view-subtitle">
         לחץ על שבוע כדי לראות משימות, מדע, טיפים ומתכונים.
       </p>
+
+      {onNavigate && (
+        <div
+          className="card training-link-card"
+          onClick={() => onNavigate('training')}
+          role="button"
+        >
+          <div className="space-between">
+            <h3 className="card-title card-title-with-icon" style={{ margin: 0 }}>
+              <DumbbellIcon size={22} /> אימוני כוח
+            </h3>
+            <span className="link-btn">פתח ←</span>
+          </div>
+          <p className="muted" style={{ marginTop: 6 }}>
+            התוכנית הנוכחית: <strong>{plan.short}</strong> · {plan.workouts.length} אימונים
+          </p>
+        </div>
+      )}
 
       {weeks.map(w => {
         const isExpanded = expanded === w.id

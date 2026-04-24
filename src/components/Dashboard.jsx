@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { weeks } from '../data/weeks'
-import { WeekIcon, ClockIcon, ShakeIcon, CalendarIcon, SparklesIcon } from '../icons'
+import { WeekIcon, ClockIcon, ShakeIcon, SparklesIcon } from '../icons'
 import { WaterWidget, formatLiters } from './WaterTracker'
 import DailyChecklist, { getTasksForWeek } from './DailyChecklist'
 import { useLocalStorage, todayKey, daysBetween } from '../hooks/useLocalStorage'
@@ -55,7 +55,15 @@ function getStreak(log, goal = 8) {
   return streak
 }
 
-export default function Dashboard({ currentWeek, startDate, gender, onNavigate, onChangeStart }) {
+function timeGreeting() {
+  const h = new Date().getHours()
+  if (h >= 5 && h < 12) return 'בוקר טוב'
+  if (h >= 12 && h < 17) return 'צהריים טובים'
+  if (h >= 17 && h < 21) return 'ערב טוב'
+  return 'לילה טוב'
+}
+
+export default function Dashboard({ currentWeek, startDate, gender, name, onNavigate }) {
   const [waterLog] = useLocalStorage('waterLog', {})
   const [tasksDone] = useLocalStorage(`tasks:${todayKey()}`, {})
 
@@ -63,7 +71,6 @@ export default function Dashboard({ currentWeek, startDate, gender, onNavigate, 
   const dayOfWeek = startDate
     ? (daysBetween(startDate) % 7) + 1
     : 1
-  const totalDays = startDate ? daysBetween(startDate) + 1 : 1
   const streak = getStreak(waterLog)
 
   const weekTasks = getTasksForWeek(currentWeek)
@@ -71,6 +78,14 @@ export default function Dashboard({ currentWeek, startDate, gender, onNavigate, 
 
   return (
     <div className="view">
+      {name && (
+        <div className="greeting">
+          <span className="greeting-text">{timeGreeting()},</span>{' '}
+          <span className="greeting-name">{name}</span>{' '}
+          <span className="greeting-wave" aria-hidden>👋</span>
+        </div>
+      )}
+
       <div className="hero-week">
         <div className="big-icon"><WeekIcon name={week.icon} size={52} /></div>
         <div style={{ flex: 1 }}>
@@ -134,13 +149,6 @@ export default function Dashboard({ currentWeek, startDate, gender, onNavigate, 
         </p>
       </div>
 
-      <div className="card">
-        <h3 className="card-title card-title-with-icon">
-          <CalendarIcon size={22} /> תאריך התחלה
-        </h3>
-        <p className="muted">{startDate || 'לא הוגדר'} · יום {totalDays}</p>
-        <button className="btn-secondary" onClick={onChangeStart}>שנה תאריך התחלה</button>
-      </div>
     </div>
   )
 }

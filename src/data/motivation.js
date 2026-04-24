@@ -70,11 +70,11 @@ export const motivationalPhrases = {
 }
 
 export function phrasesFor(gender) {
-  return motivationalPhrases[gender] || motivationalPhrases.female
+  return motivationalPhrases[gender] || motivationalPhrases.male
 }
 
 // Returns a phrase that's stable for a given day (so it doesn't change on every render).
-export function getPhraseForDay(gender = 'female', dayKey = new Date().toDateString()) {
+export function getPhraseForDay(gender = 'male', dayKey = new Date().toDateString()) {
   const list = phrasesFor(gender)
   let hash = 0
   for (let i = 0; i < dayKey.length; i++) {

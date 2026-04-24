@@ -12,7 +12,7 @@ export default function InstallAppButton({ className = '' }) {
       aria-label="התקנת האפליקציה במכשיר"
       title="התקנה"
     >
-      <svg className="install-app-btn-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <svg className="install-app-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path
           d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
           stroke="currentColor"

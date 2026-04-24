@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useLocalStorage, todayKey, daysBetween } from './hooks/useLocalStorage'
+import { useLocalStorage, daysBetween } from './hooks/useLocalStorage'
 import Dashboard from './components/Dashboard'
 import WeekView from './components/WeekView'
 import WaterTracker from './components/WaterTracker'
@@ -8,8 +8,10 @@ import FoodLists from './components/FoodLists'
 import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
 import LeptinShake from './components/LeptinShake'
+import Profile from './components/Profile'
+import OnboardingWizard from './components/OnboardingWizard'
 import InstallAppButton from './components/InstallAppButton'
-import { TabIcon, SparklesIcon } from './icons'
+import { TabIcon, UserIcon } from './icons'
 
 const TABS = [
   { id: 'home',    label: 'בית' },
@@ -23,7 +25,10 @@ const TABS = [
 
 export default function App() {
   const [startDate, setStartDate] = useLocalStorage('startDate', null)
-  const [gender, setGender] = useLocalStorage('gender', 'female')
+  const [name, setName] = useLocalStorage('name', '')
+  const [gender, setGender] = useLocalStorage('gender', 'male')
+  const [height, setHeight] = useLocalStorage('height', null)
+  const [weights, setWeights] = useLocalStorage('weights', [])
   const [tab, setTab] = useState('home')
   const [openRecipeId, setOpenRecipeId] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('favorites', [])
@@ -32,6 +37,8 @@ export default function App() {
   // compute current week
   const daysIn = startDate ? daysBetween(startDate) : 0
   const currentWeek = Math.min(8, Math.floor(daysIn / 7) + 1)
+
+  const profileIncomplete = !startDate || !height || weights.length === 0 || !name
 
   const toggleFavorite = (id) => {
     setFavorites(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
@@ -49,13 +56,32 @@ export default function App() {
     window.scrollTo(0, 0)
   }
 
-  if (!startDate || showOnboarding) {
+  const saveProfile = ({ date, gender: g, height: h, weight: w, name: n }) => {
+    setStartDate(date)
+    setName(n)
+    setGender(g)
+    setHeight(h)
+    // store or update the entry for the start date
+    setWeights(prev => {
+      const others = prev.filter(x => x.date !== date)
+      return [...others, { date, value: w }].sort((a, b) => a.date.localeCompare(b.date))
+    })
+    setShowOnboarding(false)
+  }
+
+  if (profileIncomplete || showOnboarding) {
+    const firstWeight = [...weights].sort((a, b) => a.date.localeCompare(b.date))[0]
     return (
-      <Onboarding
-        initial={startDate}
-        initialGender={gender}
-        onSave={(d, g) => { setStartDate(d); setGender(g); setShowOnboarding(false) }}
-        onClose={startDate ? () => setShowOnboarding(false) : null}
+      <OnboardingWizard
+        initial={{
+          date: startDate || undefined,
+          name: name || undefined,
+          gender,
+          height: height || undefined,
+          weight: firstWeight?.value
+        }}
+        onSave={saveProfile}
+        onClose={!profileIncomplete ? () => setShowOnboarding(false) : null}
       />
     )
   }
@@ -64,6 +90,15 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <InstallAppButton className="install-app-btn-header" />
+        <button
+          type="button"
+          className={`profile-btn-header ${tab === 'profile' ? 'active' : ''}`}
+          onClick={() => navigate(tab === 'profile' ? 'home' : 'profile')}
+          aria-label="הפרופיל שלי"
+          title="הפרופיל שלי"
+        >
+          <UserIcon size={16} />
+        </button>
         <h1> חכם הרזים</h1>
         <div className="sub">  שבוע {currentWeek}/8</div>
       </header>
@@ -73,8 +108,8 @@ export default function App() {
           currentWeek={currentWeek}
           startDate={startDate}
           gender={gender}
+          name={name}
           onNavigate={navigate}
-          onChangeStart={() => setShowOnboarding(true)}
         />
       )}
       {tab === 'weeks' && (
@@ -96,6 +131,16 @@ export default function App() {
       {tab === 'window' && <EatingWindow />}
       {tab === 'sos' && <Emergency />}
       {tab === 'shake' && <LeptinShake />}
+      {tab === 'profile' && (
+        <Profile
+          startDate={startDate}
+          gender={gender}
+          name={name}
+          currentWeek={currentWeek}
+          onNavigate={navigate}
+          onEditProfile={() => setShowOnboarding(true)}
+        />
+      )}
 
       <nav className="tab-bar">
         {TABS.map(t => (
@@ -109,65 +154,6 @@ export default function App() {
           </button>
         ))}
       </nav>
-    </div>
-  )
-}
-
-function Onboarding({ initial, initialGender, onSave, onClose }) {
-  const [date, setDate] = useState(initial || todayKey())
-  const [gender, setGender] = useState(initialGender || 'female')
-
-  return (
-    <div className="app">
-      <InstallAppButton className="install-app-btn-onboarding" />
-      <div className="onboarding">
-        <div className="onboarding-icon-wrap"><SparklesIcon size={52} /></div>
-        <h1>ברוך הבא לחכם הרזים</h1>
-        <p>
-          חכם הרזים בצורה דיגיטלית.
-          בחרו את תאריך ההתחלה — נעקוב אחריכם כל 8 השבועות.
-        </p>
-
-        <label style={{ display: 'block', textAlign: 'right', fontSize: 13, color: 'var(--gray-600)', marginBottom: 6 }}>
-          מגדר:
-        </label>
-        <div className="gender-picker">
-          <button
-            type="button"
-            className={`gender-option ${gender === 'female' ? 'active' : ''}`}
-            onClick={() => setGender('female')}
-          >
-            <span className="gender-emoji" aria-hidden>👩</span>
-            <span>נקבה</span>
-          </button>
-          <button
-            type="button"
-            className={`gender-option ${gender === 'male' ? 'active' : ''}`}
-            onClick={() => setGender('male')}
-          >
-            <span className="gender-emoji" aria-hidden>👨</span>
-            <span>זכר</span>
-          </button>
-        </div>
-
-        <label style={{ display: 'block', textAlign: 'right', fontSize: 13, color: 'var(--gray-600)', marginBottom: 6 }}>
-          תאריך התחלה:
-        </label>
-        <input
-          type="date"
-          value={date}
-          onChange={e => setDate(e.target.value)}
-          max={todayKey()}
-        />
-        <button className="btn-primary" onClick={() => onSave(date, gender)}>
-          {initial ? 'עדכן' : 'התחל!'}
-        </button>
-        {onClose && (
-          <button className="link-btn" style={{ marginTop: 12 }} onClick={onClose}>
-            ביטול
-          </button>
-        )}
-      </div>
     </div>
   )
 }

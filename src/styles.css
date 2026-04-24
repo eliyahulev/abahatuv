@@ -678,6 +678,7 @@ input, textarea, select {
   margin: 0 0 12px;
 }
 .water-goal-motivation-text {
+  font-size: 12px;
   margin-bottom: 0;
 }
 .water-ring-panel--compact .water-goal-motivation {

@@ -523,11 +523,59 @@ input, textarea, select {
 }
 
 .water-ring-panel {
+  position: relative;
   background: linear-gradient(180deg, #f0f7ff 0%, #e8f2fc 100%);
   border-radius: 24px;
   padding: 28px 16px 22px;
   margin-bottom: 18px;
   box-shadow: 0 1px 3px rgba(0, 89, 187, 0.06);
+  overflow: hidden;
+}
+
+.water-confetti {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.water-confetti-piece {
+  position: absolute;
+  top: 18%;
+  width: 8px;
+  height: 11px;
+  border-radius: 2px;
+  margin-left: -4px;
+  animation-name: water-confetti-burst;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.water-confetti-piece--round {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+@keyframes water-confetti-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0turn);
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--confetti-dx, 0px), 200px) rotate(var(--confetti-rot, 1turn));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .water-confetti {
+    display: none !important;
+  }
 }
 
 .water-widget-card .water-ring-panel {
@@ -597,6 +645,11 @@ input, textarea, select {
   font-weight: 800;
   color: #0070ea;
   line-height: 1;
+  transition: color 0.35s ease;
+}
+
+.water-ring-panel--goal .water-ring-current {
+  color: #16a34a;
 }
 
 .water-ring-panel--compact .water-ring-current {
@@ -619,6 +672,20 @@ input, textarea, select {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-top: 8px;
+}
+
+.water-goal-motivation {
+  margin: 0 0 12px;
+}
+.water-goal-motivation-text {
+  margin-bottom: 0;
+}
+.water-ring-panel--compact .water-goal-motivation {
+  margin-bottom: 8px;
+  padding: 14px 16px;
+}
+.water-ring-panel--compact .water-goal-motivation .motivation-card-text {
+  font-size: 15px;
 }
 
 .water-ring-panel--compact .water-add-cards {

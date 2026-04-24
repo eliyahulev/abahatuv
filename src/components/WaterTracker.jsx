@@ -1,7 +1,7 @@
-import React, { useId } from 'react'
+import React, { useId, useMemo, useState } from 'react'
 import { todayKey } from '../hooks/useLocalStorage'
 import { useUserField } from '../hooks/useUserData'
-import { ViewTitle, DropletIcon, DropletFilledIcon, WaterBottleIcon, WaterGlassIcon } from '../icons'
+import { ViewTitle, DropletIcon, DropletFilledIcon, WaterBottleIcon, WaterGlassIcon, SparklesIcon } from '../icons'
 
 export const GOAL_CUPS = 12
 export const STRETCH_CUPS = 16
@@ -25,13 +25,54 @@ export function formatLiters(n) {
   return t.endsWith('.0') ? String(Math.round(n)) : t
 }
 
+const confettiColors = ['#0070ea', '#22c55e', '#fbbf24', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316']
+
+function WaterConfetti({ burstKey }) {
+  const pieces = useMemo(() => {
+    if (!burstKey) return []
+    return Array.from({ length: 36 }, (_, i) => {
+      const left = 5 + Math.random() * 90
+      return {
+        id: `c-${burstKey}-${i}`,
+        left,
+        delay: Math.random() * 0.15,
+        duration: 0.85 + Math.random() * 0.45,
+        dx: -70 + Math.random() * 140,
+        rot: 1.2 + Math.random() * 1.5,
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        round: Math.random() > 0.55
+      }
+    })
+  }, [burstKey])
+  if (!burstKey) return null
+  return (
+    <div className="water-confetti" aria-hidden>
+      {pieces.map(p => (
+        <span
+          key={p.id}
+          className={`water-confetti-piece${p.round ? ' water-confetti-piece--round' : ''}`}
+          style={{
+            left: `${p.left}%`,
+            background: p.color,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
+            '--confetti-dx': `${p.dx}px`,
+            '--confetti-rot': `${p.rot}turn`
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 export function WaterRingSection({
   cups,
   onAddCup,
   onAddBottle,
   onReset,
   compact,
-  showReset
+  showReset,
+  celebrationKey = 0
 }) {
   const uid = useId().replace(/:/g, '')
   const gradId = `water-ring-grad-${uid}`
@@ -43,9 +84,18 @@ export function WaterRingSection({
 
   const ringSize = compact ? 168 : 240
   const vb = 200
+  const goalReached = cups >= GOAL_CUPS
+  const panelClass = [
+    'water-ring-panel',
+    compact && 'water-ring-panel--compact',
+    goalReached && 'water-ring-panel--goal'
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <div className={compact ? 'water-ring-panel water-ring-panel--compact' : 'water-ring-panel'}>
+    <div className={panelClass}>
+      <WaterConfetti burstKey={celebrationKey} />
       <div className="water-ring-wrap">
         <svg
           className="water-ring-svg"
@@ -56,8 +106,14 @@ export function WaterRingSection({
         >
           <defs>
             <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#0070EA" />
-              <stop offset="100%" stopColor="#0059BB" />
+              <stop
+                offset="0%"
+                stopColor={goalReached ? '#22c55e' : '#0070EA'}
+              />
+              <stop
+                offset="100%"
+                stopColor={goalReached ? '#15803d' : '#0059BB'}
+              />
             </linearGradient>
           </defs>
           <circle
@@ -79,11 +135,16 @@ export function WaterRingSection({
             strokeDasharray={c}
             strokeDashoffset={dashOffset}
             transform="rotate(-90 100 100)"
-            style={{ transition: 'stroke-dashoffset 0.45s ease' }}
+            style={{
+              transition: 'stroke-dashoffset 0.45s ease, stroke 0.35s ease'
+            }}
           />
         </svg>
         <div className="water-ring-center">
-          <DropletFilledIcon size={compact ? 32 : 40} />
+          <DropletFilledIcon
+            size={compact ? 32 : 40}
+            fill={goalReached ? '#16a34a' : '#0070EA'}
+          />
           <div className="water-ring-digits" dir="ltr">
             <span className="water-ring-goal">{formatLiters(GOAL_LITERS)}</span>
             <span className="water-ring-slash">/</span>
@@ -92,6 +153,18 @@ export function WaterRingSection({
           <div className="water-ring-caption">ליטרים היום</div>
         </div>
       </div>
+
+      {goalReached && (
+        <div className="motivation-card water-goal-motivation" dir="rtl">
+          <div className="motivation-card-head">
+            <SparklesIcon size={16} />
+            <span>כל הכבוד</span>
+          </div>
+          <p className="motivation-card-text water-goal-motivation-text">
+            שתית את מכסת המים היומית, אפשר להמשיך לשתות ולא לשכוח 2 כוסות ממים לפני כל ארוחה
+          </p>
+        </div>
+      )}
 
       <div className="water-add-cards">
         <button type="button" className="water-add-card" onClick={onAddCup}>
@@ -122,10 +195,16 @@ export function WaterRingSection({
 export function WaterWidget() {
   const date = todayKey()
   const [log, setLog] = useUserField('waterLog', {})
+  const [celebrationKey, setCelebrationKey] = useState(0)
   const cups = log[date] || 0
 
   const update = (delta) => {
-    setLog(prev => ({ ...prev, [date]: Math.max(0, (prev[date] || 0) + delta) }))
+    setLog(prev => {
+      const cur = prev[date] || 0
+      const next = Math.max(0, cur + delta)
+      if (cur < GOAL_CUPS && next >= GOAL_CUPS) setCelebrationKey(k => k + 1)
+      return { ...prev, [date]: next }
+    })
   }
 
   return (
@@ -143,6 +222,7 @@ export function WaterWidget() {
         onAddBottle={() => update(2)}
         compact
         showReset={false}
+        celebrationKey={celebrationKey}
       />
     </div>
   )
@@ -151,12 +231,18 @@ export function WaterWidget() {
 export default function WaterTracker() {
   const date = todayKey()
   const [log, setLog] = useUserField('waterLog', {})
+  const [celebrationKey, setCelebrationKey] = useState(0)
   const cups = log[date] || 0
   const days = last7Days()
   const maxInWeek = Math.max(STRETCH_CUPS, ...days.map(d => log[d.key] || 0))
 
   const update = (delta) => {
-    setLog(prev => ({ ...prev, [date]: Math.max(0, (prev[date] || 0) + delta) }))
+    setLog(prev => {
+      const cur = prev[date] || 0
+      const next = Math.max(0, cur + delta)
+      if (cur < GOAL_CUPS && next >= GOAL_CUPS) setCelebrationKey(k => k + 1)
+      return { ...prev, [date]: next }
+    })
   }
 
   const setTo = (n) => setLog(prev => ({ ...prev, [date]: n }))
@@ -174,6 +260,7 @@ export default function WaterTracker() {
         onAddBottle={() => update(2)}
         onReset={() => setTo(0)}
         showReset
+        celebrationKey={celebrationKey}
       />
 
       <div className="water-chart">

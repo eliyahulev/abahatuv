@@ -161,7 +161,7 @@ export function WaterRingSection({
             <span>כל הכבוד</span>
           </div>
           <p className="motivation-card-text water-goal-motivation-text">
-            שתית את מכסת המים היומית, אפשר להמשיך לשתות ולא לשכוח 2 כוסות ממים לפני כל ארוחה
+            שתית את מכסת המים היומית, אפשר להמשיך לשתות ולא לשכוח 2 כוסות מים לפני כל ארוחה
           </p>
         </div>
       )}

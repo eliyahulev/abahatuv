@@ -1205,6 +1205,37 @@ input, textarea, select {
   line-height: 1;
 }
 
+/* ===== Google sign-in button ===== */
+
+.google-signin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: white;
+  color: var(--gray-800);
+  border: 1px solid var(--gray-300);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  margin-top: 8px;
+}
+.google-signin-btn:hover:not(:disabled) {
+  background: var(--gray-100);
+  box-shadow: var(--shadow);
+}
+.google-signin-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.google-signin-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* ===== Onboarding Wizard ===== */
 
 .onboarding-wizard {
@@ -1342,6 +1373,18 @@ input, textarea, select {
 }
 .profile-back {
   font-size: 14px;
+}
+.profile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-signout {
+  color: var(--gray-500);
+  font-size: 13px;
+}
+.profile-signout:hover {
+  color: var(--accent-red);
 }
 
 .profile-hero {

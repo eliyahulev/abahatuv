@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { useLocalStorage, daysBetween } from './hooks/useLocalStorage'
+import { daysBetween } from './hooks/useLocalStorage'
+import { useUserField, useUserDataReady } from './hooks/useUserData'
+import { useAuth } from './hooks/useAuth'
 import Dashboard from './components/Dashboard'
 import WeekView from './components/WeekView'
 import WaterTracker from './components/WaterTracker'
@@ -11,6 +13,7 @@ import LeptinShake from './components/LeptinShake'
 import Profile from './components/Profile'
 import OnboardingWizard from './components/OnboardingWizard'
 import InstallAppButton from './components/InstallAppButton'
+import LoginScreen from './components/LoginScreen'
 import { TabIcon, UserIcon } from './icons'
 
 const TABS = [
@@ -23,25 +26,44 @@ const TABS = [
   { id: 'sos',     label: 'SOS' }
 ]
 
+function BootLoader() {
+  return (
+    <div className="app-boot-loader" role="status" aria-live="polite">
+      <div className="app-boot-loader-spinner" aria-hidden="true" />
+      <span className="app-boot-loader-text">טוען…</span>
+    </div>
+  )
+}
+
 export default function App() {
-  const [startDate, setStartDate] = useLocalStorage('startDate', null)
-  const [name, setName] = useLocalStorage('name', '')
-  const [gender, setGender] = useLocalStorage('gender', 'male')
-  const [height, setHeight] = useLocalStorage('height', null)
-  const [weights, setWeights] = useLocalStorage('weights', [])
+  const { user, status } = useAuth()
+  const ready = useUserDataReady()
+
+  if (status === 'loading') return <BootLoader />
+  if (!user) return <LoginScreen />
+  if (!ready) return <BootLoader />
+
+  return <AppAuthed />
+}
+
+function AppAuthed() {
+  const [startDate, setStartDate] = useUserField('startDate', null)
+  const [name, setName] = useUserField('name', '')
+  const [gender, setGender] = useUserField('gender', 'male')
+  const [height, setHeight] = useUserField('height', null)
+  const [weights, setWeights] = useUserField('weights', [])
+  const [favorites, setFavorites] = useUserField('favorites', [])
   const [tab, setTab] = useState('home')
   const [openRecipeId, setOpenRecipeId] = useState(null)
-  const [favorites, setFavorites] = useLocalStorage('favorites', [])
   const [showOnboarding, setShowOnboarding] = useState(false)
 
-  // compute current week
   const daysIn = startDate ? daysBetween(startDate) : 0
   const currentWeek = Math.min(8, Math.floor(daysIn / 7) + 1)
 
-  const profileIncomplete = !startDate || !height || weights.length === 0 || !name
+  const profileIncomplete = !startDate || !height || (weights || []).length === 0 || !name
 
   const toggleFavorite = (id) => {
-    setFavorites(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+    setFavorites(prev => (prev || []).includes(id) ? (prev || []).filter(x => x !== id) : [...(prev || []), id])
   }
 
   const navigate = (target) => {
@@ -61,16 +83,15 @@ export default function App() {
     setName(n)
     setGender(g)
     setHeight(h)
-    // store or update the entry for the start date
     setWeights(prev => {
-      const others = prev.filter(x => x.date !== date)
+      const others = (prev || []).filter(x => x.date !== date)
       return [...others, { date, value: w }].sort((a, b) => a.date.localeCompare(b.date))
     })
     setShowOnboarding(false)
   }
 
   if (profileIncomplete || showOnboarding) {
-    const firstWeight = [...weights].sort((a, b) => a.date.localeCompare(b.date))[0]
+    const firstWeight = [...(weights || [])].sort((a, b) => a.date.localeCompare(b.date))[0]
     return (
       <OnboardingWizard
         initial={{
@@ -123,7 +144,7 @@ export default function App() {
         <RecipeList
           openRecipeId={openRecipeId}
           setOpenRecipeId={setOpenRecipeId}
-          favorites={favorites}
+          favorites={favorites || []}
           toggleFavorite={toggleFavorite}
         />
       )}

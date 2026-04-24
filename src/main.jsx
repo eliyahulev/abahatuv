@@ -2,12 +2,18 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from './App.jsx'
+import { AuthProvider } from './hooks/useAuth.jsx'
+import { UserDataProvider } from './hooks/useUserData.jsx'
 import './styles.css'
 
 registerSW({ immediate: true })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <UserDataProvider>
+        <App />
+      </UserDataProvider>
+    </AuthProvider>
   </React.StrictMode>
 )

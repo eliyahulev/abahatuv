@@ -1,5 +1,6 @@
 import React, { useId } from 'react'
-import { useLocalStorage, todayKey } from '../hooks/useLocalStorage'
+import { todayKey } from '../hooks/useLocalStorage'
+import { useUserField } from '../hooks/useUserData'
 import { ViewTitle, DropletIcon, DropletFilledIcon, WaterBottleIcon, WaterGlassIcon } from '../icons'
 
 export const GOAL_CUPS = 8
@@ -120,7 +121,7 @@ export function WaterRingSection({
 
 export function WaterWidget() {
   const date = todayKey()
-  const [log, setLog] = useLocalStorage('waterLog', {})
+  const [log, setLog] = useUserField('waterLog', {})
   const cups = log[date] || 0
 
   const update = (delta) => {
@@ -149,7 +150,7 @@ export function WaterWidget() {
 
 export default function WaterTracker() {
   const date = todayKey()
-  const [log, setLog] = useLocalStorage('waterLog', {})
+  const [log, setLog] = useUserField('waterLog', {})
   const cups = log[date] || 0
   const days = last7Days()
   const maxInWeek = Math.max(STRETCH_CUPS, ...days.map(d => log[d.key] || 0))

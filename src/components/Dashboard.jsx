@@ -3,7 +3,8 @@ import { weeks } from '../data/weeks'
 import { WeekIcon, ClockIcon, ShakeIcon, SparklesIcon } from '../icons'
 import { WaterWidget, formatLiters } from './WaterTracker'
 import DailyChecklist, { getTasksForWeek } from './DailyChecklist'
-import { useLocalStorage, todayKey, daysBetween } from '../hooks/useLocalStorage'
+import { todayKey, daysBetween } from '../hooks/useLocalStorage'
+import { useUserField, useUserMapEntry } from '../hooks/useUserData'
 import { phrasesFor, getPhraseForDay } from '../data/motivation'
 
 function MotivationCard({ gender }) {
@@ -64,8 +65,8 @@ function timeGreeting() {
 }
 
 export default function Dashboard({ currentWeek, startDate, gender, name, onNavigate }) {
-  const [waterLog] = useLocalStorage('waterLog', {})
-  const [tasksDone] = useLocalStorage(`tasks:${todayKey()}`, {})
+  const [waterLog] = useUserField('waterLog', {})
+  const [tasksDone] = useUserMapEntry('tasks', todayKey(), {})
 
   const week = weeks.find(w => w.number === currentWeek) || weeks[0]
   const dayOfWeek = startDate

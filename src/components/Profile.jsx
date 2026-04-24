@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react'
-import { useLocalStorage, todayKey, daysBetween } from '../hooks/useLocalStorage'
+import { todayKey, daysBetween } from '../hooks/useLocalStorage'
+import { useUserField } from '../hooks/useUserData'
 import { calcBmi, bmiCategory, formatBmi } from '../data/bmi'
 import { CalendarIcon, DnaIcon, TargetIcon, TrophyIcon } from '../icons'
+import { useAuth } from '../hooks/useAuth'
 
 function sortWeights(list) {
   return [...list].sort((a, b) => a.date.localeCompare(b.date))
@@ -14,13 +16,14 @@ function formatDate(iso) {
 }
 
 export default function Profile({ startDate, gender, name, currentWeek, onNavigate, onEditProfile }) {
-  const [height] = useLocalStorage('height', null)
-  const [weights, setWeights] = useLocalStorage('weights', [])
+  const [height] = useUserField('height', null)
+  const [weights, setWeights] = useUserField('weights', [])
   const [newDate, setNewDate] = useState(todayKey())
   const [newValue, setNewValue] = useState('')
   const [showAdd, setShowAdd] = useState(false)
+  const { signOut } = useAuth()
 
-  const sorted = useMemo(() => sortWeights(weights), [weights])
+  const sorted = useMemo(() => sortWeights(weights || []), [weights])
   const latest = sorted[sorted.length - 1]
   const first = sorted[0]
   const delta = latest && first ? latest.value - first.value : 0
@@ -32,14 +35,14 @@ export default function Profile({ startDate, gender, name, currentWeek, onNaviga
   const addWeight = () => {
     const v = Number(newValue)
     if (!v || v < 25 || v > 300) return
-    const next = [...weights.filter(w => w.date !== newDate), { date: newDate, value: v }]
+    const next = [...(weights || []).filter(w => w.date !== newDate), { date: newDate, value: v }]
     setWeights(next)
     setNewValue('')
     setShowAdd(false)
   }
 
   const removeEntry = (date) => {
-    setWeights(weights.filter(w => w.date !== date))
+    setWeights((weights || []).filter(w => w.date !== date))
   }
 
   return (
@@ -47,7 +50,17 @@ export default function Profile({ startDate, gender, name, currentWeek, onNaviga
       <div className="profile-header">
         <button className="link-btn profile-back" onClick={() => onNavigate('home')}>→ חזרה</button>
         <h2>{name ? `הפרופיל של ${name}` : 'הפרופיל שלי'}</h2>
-        <button className="link-btn" onClick={onEditProfile}>ערוך</button>
+        <div className="profile-header-actions">
+          <button className="link-btn" onClick={onEditProfile}>ערוך</button>
+          <button
+            className="link-btn profile-signout"
+            onClick={() => {
+              if (window.confirm('להתנתק מהחשבון?')) signOut()
+            }}
+          >
+            התנתק
+          </button>
+        </div>
       </div>
 
       <div className="profile-hero">

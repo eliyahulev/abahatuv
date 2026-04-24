@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useUserField } from '../hooks/useUserData'
 import { ViewTitle, ClockIcon, StatusDotIcon, LightbulbIcon } from '../icons'
 
 function formatDuration(ms) {
@@ -12,8 +12,8 @@ function formatDuration(ms) {
 }
 
 export default function EatingWindow() {
-  const [hours, setHours] = useLocalStorage('ew:hours', 10)
-  const [startTime, setStartTime] = useLocalStorage('ew:start', null)
+  const [hours, setHours] = useUserField('ewHours', 10)
+  const [startTime, setStartTime] = useUserField('ewStart', null)
   const [now, setNow] = useState(Date.now())
 
   useEffect(() => {

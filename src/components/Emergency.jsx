@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useUserField } from '../hooks/useUserData'
 import { comebackProtocol } from '../data/weeks'
 import { ViewTitle, SosIcon, PenIcon, CalendarIcon } from '../icons'
 
 export default function Emergency() {
-  const [notes, setNotes] = useLocalStorage('breakNotes', [])
+  const [notes, setNotes] = useUserField('breakNotes', [])
   const [showCamback, setShowCamback] = useState(false)
   const [draft, setDraft] = useState('')
 

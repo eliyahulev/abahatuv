@@ -1,7 +1,8 @@
 import React from 'react'
 import { weeks } from '../data/weeks'
 import { CheckMarkIcon } from '../icons'
-import { useLocalStorage, todayKey } from '../hooks/useLocalStorage'
+import { todayKey } from '../hooks/useLocalStorage'
+import { useUserMapEntry } from '../hooks/useUserData'
 
 // Accumulate all tasks from week 1 up through the current week
 export function getTasksForWeek(weekNumber) {
@@ -18,7 +19,7 @@ export function getTasksForWeek(weekNumber) {
 
 export default function DailyChecklist({ weekNumber }) {
   const date = todayKey()
-  const [done, setDone] = useLocalStorage(`tasks:${date}`, {})
+  const [done, setDone] = useUserMapEntry('tasks', date, {})
   const tasks = getTasksForWeek(weekNumber)
 
   const toggle = (id) => {

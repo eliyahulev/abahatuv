@@ -1,25 +1,5 @@
-import { useState, useEffect } from 'react'
-
-export function useLocalStorage(key, defaultValue) {
-  const [value, setValue] = useState(() => {
-    try {
-      const raw = localStorage.getItem(key)
-      return raw !== null ? JSON.parse(raw) : defaultValue
-    } catch {
-      return defaultValue
-    }
-  })
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(value))
-    } catch {
-      // quota exceeded or private mode — ignore
-    }
-  }, [key, value])
-
-  return [value, setValue]
-}
+// Date helpers shared across the app. (The legacy useLocalStorage hook was
+// removed when all state moved to Firestore via useUserData.)
 
 export const todayKey = () => {
   const d = new Date()

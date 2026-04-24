@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { weeks } from '../data/weeks'
 import { WeekIcon, ClockIcon, ShakeIcon, SparklesIcon } from '../icons'
-import { WaterWidget, formatLiters } from './WaterTracker'
+import { WaterWidget, formatLiters, GOAL_CUPS } from './WaterTracker'
 import DailyChecklist, { getTasksForWeek } from './DailyChecklist'
 import { todayKey, daysBetween } from '../hooks/useLocalStorage'
 import { useUserField, useUserMapEntry } from '../hooks/useUserData'
@@ -41,7 +41,7 @@ function MotivationCard({ gender }) {
   )
 }
 
-function getStreak(log, goal = 8) {
+function getStreak(log, goal = GOAL_CUPS) {
   // consecutive days ending today (or yesterday) meeting water goal
   const today = new Date()
   let streak = 0

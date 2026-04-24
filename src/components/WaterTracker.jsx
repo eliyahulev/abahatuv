@@ -3,7 +3,7 @@ import { todayKey } from '../hooks/useLocalStorage'
 import { useUserField } from '../hooks/useUserData'
 import { ViewTitle, DropletIcon, DropletFilledIcon, WaterBottleIcon, WaterGlassIcon } from '../icons'
 
-export const GOAL_CUPS = 8
+export const GOAL_CUPS = 12
 export const STRETCH_CUPS = 16
 const GOAL_LITERS = GOAL_CUPS * 0.25
 const LITERS_PER_CUP = 0.25

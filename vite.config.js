@@ -33,5 +33,10 @@ export default defineConfig({
       devOptions: { enabled: true }
     })
   ],
+  css: {
+    preprocessorOptions: {
+      scss: { api: 'modern-compiler' }
+    }
+  },
   server: { port: 5173, open: true }
 })

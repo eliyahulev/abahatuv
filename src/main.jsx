@@ -4,7 +4,7 @@ import { registerSW } from 'virtual:pwa-register'
 import App from './App.jsx'
 import { AuthProvider } from './hooks/useAuth.jsx'
 import { UserDataProvider } from './hooks/useUserData.jsx'
-import './styles.css'
+import './styles.scss'
 
 registerSW({ immediate: true })
 

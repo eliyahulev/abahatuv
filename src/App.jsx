@@ -19,7 +19,7 @@ import { TabIcon, UserIcon } from './icons'
 
 const TABS = [
   { id: 'home',     label: 'בית' },
-  { id: 'weeks',    label: 'שבועות' },
+  { id: 'weeks',    label: 'תוכנית' },
   { id: 'training', label: 'אימון' },
   { id: 'water',    label: 'מים' },
   { id: 'recipes',  label: 'מתכונים' },

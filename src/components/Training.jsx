@@ -12,9 +12,15 @@ export default function Training() {
     <div className="view">
       <ViewTitle Icon={TrophyIcon}>אימוני כוח</ViewTitle>
 
+      <div className="card training-plan-info" role="note">
+        <p className="training-plan-info-body">
+          <strong>בחרו תוכנית אחת מהרשימה למטה</strong> והמשיכו איתה עד הסוף — אל תחליפו באמצע בין תוכניות.
+        </p>
+      </div>
+
       <div className="card training-goals">
         <h3 className="card-title card-title-with-icon">
-          <TargetIcon size={20} /> שתי המטרות של אימוני הכושר
+          <TargetIcon size={20} /> מטרות אימוני הכושר
         </h3>
         <ol className="training-goal-list">
           {trainingGoals.map((g, i) => (
@@ -22,6 +28,7 @@ export default function Training() {
           ))}
         </ol>
       </div>
+
 
       <div className="plan-picker" role="tablist" aria-label="בחר תוכנית">
         {trainingPlanOrder.map((id) => {

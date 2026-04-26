@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { doc, onSnapshot, setDoc } from 'firebase/firestore'
+import { doc, onSnapshot, setDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from './useAuth'
 
@@ -51,11 +51,22 @@ export function UserDataProvider({ children }) {
     })
   }, [user?.uid])
 
+  const resetData = useCallback(async () => {
+    if (!user) return
+    setData({})
+    dataRef.current = {}
+    await deleteDoc(doc(db, 'users', user.uid))
+  }, [user?.uid])
+
   return (
-    <UserDataContext.Provider value={{ data, ready, setField }}>
+    <UserDataContext.Provider value={{ data, ready, setField, resetData }}>
       {children}
     </UserDataContext.Provider>
   )
+}
+
+export function useResetData() {
+  return useContext(UserDataContext).resetData
 }
 
 export function useUserDataReady() {

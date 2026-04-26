@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { todayKey, daysBetween } from '../hooks/useLocalStorage'
-import { useUserField } from '../hooks/useUserData'
+import { useUserField, useResetData } from '../hooks/useUserData'
 import { calcBmi, bmiCategory, formatBmi } from '../data/bmi'
 import { CalendarIcon, DnaIcon, TargetIcon, TrophyIcon } from '../icons'
 import { useAuth } from '../hooks/useAuth'
@@ -21,7 +21,24 @@ export default function Profile({ startDate, gender, name, currentWeek, onNaviga
   const [newDate, setNewDate] = useState(todayKey())
   const [newValue, setNewValue] = useState('')
   const [showAdd, setShowAdd] = useState(false)
+  const [showResetConfirm, setShowResetConfirm] = useState(false)
+  const [resetting, setResetting] = useState(false)
   const { signOut } = useAuth()
+  const resetData = useResetData()
+
+  const handleReset = async () => {
+    setResetting(true)
+    try {
+      await resetData()
+      setShowResetConfirm(false)
+      onNavigate('home')
+    } catch (e) {
+      console.error('Reset failed', e)
+      alert('האיפוס נכשל. נסו שוב.')
+    } finally {
+      setResetting(false)
+    }
+  }
 
   const sorted = useMemo(() => sortWeights(weights || []), [weights])
   const latest = sorted[sorted.length - 1]
@@ -205,6 +222,59 @@ export default function Profile({ startDate, gender, name, currentWeek, onNaviga
               <span className="summary-v" style={{ color: delta < 0 ? '#48BB78' : delta > 0 ? '#F56565' : 'inherit' }}>
                 {delta > 0 ? '+' : ''}{delta.toFixed(1)} ק"ג
               </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="card danger-zone">
+        <h3 className="card-title danger-title">אזור מסוכן</h3>
+        <p className="muted" style={{ marginTop: 0, marginBottom: 12, fontSize: 13 }}>
+          איפוס החשבון ימחק את כל הנתונים שלך — שם, גובה, משקלים, מים, משימות והכל. החשבון שלך ב-Google יישאר.
+        </p>
+        <button
+          type="button"
+          className="btn-danger"
+          onClick={() => setShowResetConfirm(true)}
+        >
+          אפס את החשבון
+        </button>
+      </div>
+
+      {showResetConfirm && (
+        <div className="install-hint-backdrop" onClick={() => !resetting && setShowResetConfirm(false)}>
+          <div className="install-hint-card danger-modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="danger-title">לאפס את החשבון?</h3>
+            <p style={{ color: 'var(--gray-700)', lineHeight: 1.6, fontSize: 14 }}>
+              פעולה זו תמחק <strong>לצמיתות</strong> את כל הנתונים שלך:
+            </p>
+            <ul className="danger-list">
+              <li>פרופיל (שם, מגדר, גובה, תאריך התחלה)</li>
+              <li>היסטוריית משקלים</li>
+              <li>יומן מים ומשימות יומיות</li>
+              <li>הגדרות חלון אכילה ופתקי שבירה</li>
+              <li>תוכנית האימון שנבחרה</li>
+            </ul>
+            <p style={{ color: 'var(--accent-red)', fontSize: 13, fontWeight: 600, marginTop: 12 }}>
+              לא ניתן לבטל את הפעולה.
+            </p>
+            <div className="danger-actions">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setShowResetConfirm(false)}
+                disabled={resetting}
+              >
+                ביטול
+              </button>
+              <button
+                type="button"
+                className="btn-danger"
+                onClick={handleReset}
+                disabled={resetting}
+              >
+                {resetting ? 'מאפס…' : 'כן, אפס הכל'}
+              </button>
             </div>
           </div>
         </div>

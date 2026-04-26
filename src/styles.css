@@ -1155,6 +1155,54 @@ input, textarea, select {
   font-weight: 600;
   width: 100%;
 }
+.btn-danger {
+  background: var(--accent-red);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(245, 101, 101, 0.3);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.btn-danger:hover:not(:disabled) {
+  background: #E53E3E;
+}
+.btn-danger:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.btn-danger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.danger-zone {
+  border: 1px solid rgba(245, 101, 101, 0.25);
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFFAFA 100%);
+}
+.danger-title {
+  color: var(--accent-red) !important;
+}
+.danger-list {
+  padding-inline-start: 20px;
+  margin: 8px 0 0;
+  color: var(--gray-700);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.danger-modal {
+  border-top: 4px solid var(--accent-red);
+}
+.danger-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.danger-actions .btn-secondary,
+.danger-actions .btn-danger {
+  flex: 1;
+}
 
 /* ===== Food Lists ===== */
 

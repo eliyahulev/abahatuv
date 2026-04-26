@@ -9,7 +9,7 @@ import RecipeList from './components/RecipeList'
 import FoodLists from './components/FoodLists'
 import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
-import LeptinShake from './components/LeptinShake'
+import MiluFitShake from './components/MiluFitShake'
 import Training from './components/Training'
 import Profile from './components/Profile'
 import OnboardingWizard from './components/OnboardingWizard'
@@ -122,7 +122,7 @@ function AppAuthed() {
         >
           <UserIcon size={16} />
         </button>
-        <h1> חכם הרזים</h1>
+        <h1> מילופיט</h1>
         <div className="sub">  שבוע {currentWeek}/8</div>
       </header>
 
@@ -154,7 +154,7 @@ function AppAuthed() {
       {tab === 'foods' && <FoodLists />}
       {tab === 'window' && <EatingWindow />}
       {tab === 'sos' && <Emergency />}
-      {tab === 'shake' && <LeptinShake />}
+      {tab === 'shake' && <MiluFitShake />}
       {tab === 'training' && <Training />}
       {tab === 'profile' && (
         <Profile

@@ -44,8 +44,8 @@ export const recipes = [
     ]
   },
   {
-    id: 'leptin-shakshuka',
-    title: 'שקשוקה לפטינית של צביקה',
+    id: 'milufit-shakshuka',
+    title: 'שקשוקה מילופיט',
     week: 3,
     category: 'ארוחה עיקרית',
     ingredients: [
@@ -280,8 +280,8 @@ export const recipes = [
     ]
   },
   {
-    id: 'leptin-bean-soup',
-    title: 'מרק שעועית לפטיני במיוחד',
+    id: 'milufit-bean-soup',
+    title: 'מרק שעועית מילופיט במיוחד',
     week: 5,
     category: 'מרק',
     ingredients: [

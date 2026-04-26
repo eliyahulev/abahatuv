@@ -65,7 +65,7 @@ function InstallHintModal({ onClose, isIOS, isSafari }) {
           <ol className="install-hint-steps">
             <li>בסרגל הכתובת של הדפדפן יש סמל התקנה קטן (מחשב עם חץ).</li>
             <li>לחצו עליו ואשרו <strong>התקן</strong>.</li>
-            <li>אם הסמל לא מופיע, פתחו את תפריט הדפדפן (⋮) ובחרו <strong>התקן את חכם הרזים</strong>.</li>
+            <li>אם הסמל לא מופיע, פתחו את תפריט הדפדפן (⋮) ובחרו <strong>התקן את מילופיט</strong>.</li>
           </ol>
         )}
         <button className="btn-primary" onClick={onClose}>הבנתי</button>

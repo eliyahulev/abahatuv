@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react'
 import { recipes } from '../data/recipes'
-import { leptinShake } from '../data/shake'
+import { milufitShake } from '../data/shake'
 import RecipeDetail from './RecipeDetail'
 import { ViewTitle, CookIcon, StarIcon, ShakeIcon } from '../icons'
 
-const allRecipes = [leptinShake, ...recipes]
+const allRecipes = [milufitShake, ...recipes]
 
 const filters = [
   { id: 'all', label: 'הכל' },
@@ -24,7 +24,7 @@ export default function RecipeList({ openRecipeId, setOpenRecipeId, favorites, t
 
   const visible = useMemo(() => {
     let list = allRecipes
-    if (filter === 'shake') list = [leptinShake]
+    if (filter === 'shake') list = [milufitShake]
     else if (filter === 'favorites') list = allRecipes.filter(r => favorites.includes(r.id))
     else if (typeof filter === 'number') list = recipes.filter(r => r.week === filter)
     if (query) list = list.filter(r => r.title.includes(query) || (r.category || '').includes(query))
@@ -85,7 +85,7 @@ export default function RecipeList({ openRecipeId, setOpenRecipeId, favorites, t
               {r.week > 0 && (
                 <div className="recipe-tile-week">שבוע {r.week}</div>
               )}
-              {r.id === 'leptin-shake' && (
+              {r.id === 'milufit-shake' && (
                 <div className="recipe-tile-week recipe-tile-badge-rec" style={{ color: 'var(--accent-green)' }}>
                   <StarIcon size={12} filled />
                   <span>המומלץ</span>

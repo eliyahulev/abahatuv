@@ -144,8 +144,8 @@ export default function WeekView({ currentWeek, onOpenRecipe, onNavigate }) {
                           className="chip"
                           onClick={() => onOpenRecipe && onOpenRecipe(rid)}
                         >
-                          {rid === 'leptin-shake' ? (
-                            <span className="chip-label-with-icon"><ShakeIcon size={16} /><span>השייק הלפטיני</span></span>
+                          {rid === 'milufit-shake' ? (
+                            <span className="chip-label-with-icon"><ShakeIcon size={16} /><span>שייק המילופיט</span></span>
                           ) : (
                             recipeTitle(rid)
                           )}
@@ -181,7 +181,7 @@ function recipeTitle(id) {
   const map = {
     'cocoa-oatmeal': 'דייסת קוואקר שוקולדית',
     'oven-salmon': 'סלמון בתנור',
-    'leptin-shakshuka': 'שקשוקה לפטינית',
+    'milufit-shakshuka': 'שקשוקה מילופיט',
     'tahini-bread': 'לחם טחינה',
     'artichoke-chips': 'צ\'יפס ארטישוק',
     'lentil-stew': 'תבשיל עדשים',
@@ -192,7 +192,7 @@ function recipeTitle(id) {
     'oatmeal-ricotta': 'מעדן שיבולת שועל',
     'simple-tofu': 'טופו פשוט',
     'coconut-curry': 'קארי מהמם',
-    'leptin-bean-soup': 'מרק שעועית לפטיני',
+    'milufit-bean-soup': 'מרק שעועית מילופיט',
     'spinach-pastida': 'פשטידת תרד',
     'home-ketchup': 'קטשופ ביתי',
     'tofu-chicken-spinach': 'טופו/עוף ותרד',

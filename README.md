@@ -1,11 +1,11 @@
-# חכם הרזים
+# מילופיט
 
-Interactive React companion app for Tzvika Einav's Leptin Diet Challenge
+Interactive React companion app for the MiluFit Challenge
 
 ## Features
 
 - **Week-by-week missions** — 8 weeks + For-Life maintenance with tasks, physiology, tips, new forbidden / allowed foods
-- **31 recipes** with ingredients and steps (includes the featured Leptin Shake)
+- **31 recipes** with ingredients and steps (includes the featured MiluFit Shake)
 - **Food lists** — allowed / forbidden / drinks, per stage
 - **Water tracker** — daily goal, 7-day chart, per-meal shortcut
 - **Daily cumulative checklist** — tasks stack as you progress through weeks

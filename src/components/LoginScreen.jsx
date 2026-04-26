@@ -27,7 +27,7 @@ export default function LoginScreen() {
     <div className="app">
       <div className="onboarding">
         <div className="onboarding-icon-wrap"><SparklesIcon size={52} /></div>
-        <h1>ברוך הבא לחכם הרזים</h1>
+        <h1>ברוך הבא למילופיט</h1>
         <p>
           התחברו עם חשבון Google כדי לשמור את ההתקדמות שלכם
           ולגשת אליה מכל מכשיר.

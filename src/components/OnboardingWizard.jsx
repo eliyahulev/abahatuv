@@ -54,7 +54,7 @@ export default function OnboardingWizard({ initial, onSave, onClose }) {
       <InstallAppButton className="install-app-btn-onboarding" />
       <div className="onboarding onboarding-wizard">
         <div className="onboarding-icon-wrap"><SparklesIcon size={52} /></div>
-        <h1>ברוך הבא לחכם הרזים</h1>
+        <h1>ברוך הבא למילופיט</h1>
 
         <div className="wizard-progress" aria-hidden>
           {STEPS.map((s, i) => (

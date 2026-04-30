@@ -142,13 +142,12 @@ export default function OnboardingWizard({ initial, onSave, onClose }) {
 
         {step.id === 'date' && (
           <div className="wizard-panel">
-            <p className="wizard-question">מתי התחלת?</p>
+            <p className="wizard-question">מתי מתחילים?</p>
             <label className="wizard-label">תאריך התחלה</label>
             <input
               type="date"
               value={date}
               onChange={e => setDate(e.target.value)}
-              max={todayKey()}
             />
           </div>
         )}

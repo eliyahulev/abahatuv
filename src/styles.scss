@@ -999,6 +999,61 @@ select {
   border-top: 1px solid var(--gray-200);
 }
 
+.week-row.locked {
+  background: var(--gray-100);
+  box-shadow: none;
+  border: 1px dashed var(--gray-300);
+
+  .week-row-header {
+    cursor: not-allowed;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+  .week-row-number {
+    background: var(--gray-300);
+    color: var(--gray-600);
+  }
+  .week-row-title {
+    color: var(--gray-500);
+  }
+  .week-row-theme {
+    color: var(--gray-400);
+  }
+}
+
+.week-row.locked.opens-tomorrow {
+  background: var(--purple-50);
+  border-color: var(--purple-200);
+
+  .week-row-number {
+    background: var(--purple-200);
+    color: var(--purple-700);
+  }
+  .week-row-title {
+    color: var(--purple-800);
+  }
+  .week-row-theme {
+    color: var(--purple-700);
+  }
+}
+
+.week-row-lock-chevron {
+  display: flex;
+  align-items: center;
+  color: var(--gray-400);
+}
+
+.badge-locked {
+  background: var(--gray-200);
+  color: var(--gray-600);
+}
+.badge-soon {
+  background: var(--accent-yellow-dark, #facc15);
+  color: #4b3a00;
+}
+
 // ----- Section title + lists used inside week rows -----
 
 .section-title {
@@ -2104,6 +2159,124 @@ select {
   border-radius: 10px;
   font-size: 11px;
   font-weight: 600;
+}
+
+// ============================================================================
+//  New-week announcement modal
+// ============================================================================
+
+.new-week-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(10, 20, 40, 0.6);
+  animation: fadeIn 0.18s ease;
+}
+
+.new-week-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 22px 22px 18px;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  text-align: right;
+  animation: fadeIn 0.25s ease-out;
+  border-top: 5px solid var(--purple-600);
+}
+
+.new-week-burst {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  background: var(--purple-50);
+  color: var(--purple-700);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.new-week-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 2px 12px;
+}
+
+.new-week-icon {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--purple-100), var(--purple-200));
+  color: var(--purple-700);
+  border-radius: 50%;
+}
+
+.new-week-num {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--purple-600);
+}
+
+.new-week-title {
+  margin: 2px 0 4px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--purple-800);
+}
+
+.new-week-theme {
+  font-size: 13px;
+  color: var(--gray-700);
+}
+
+.new-week-tasks {
+  margin: 10px 0 18px;
+  padding: 12px 14px;
+  background: var(--gray-100);
+  border-radius: var(--radius);
+
+  .new-week-tasks-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--purple-700);
+  }
+  ul {
+    margin: 0;
+    padding-inline-start: 18px;
+    color: var(--gray-800);
+    font-size: 13px;
+    line-height: 1.6;
+
+    li {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.new-week-actions {
+  display: flex;
+  gap: 10px;
+
+  .btn-primary,
+  .btn-secondary {
+    flex: 1;
+  }
 }
 
 // ============================================================================

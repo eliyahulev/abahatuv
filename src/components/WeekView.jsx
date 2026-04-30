@@ -11,15 +11,21 @@ import {
   CookIcon,
   ShakeIcon,
   TrophyIcon,
-  DumbbellIcon
+  DumbbellIcon,
+  LockIcon
 } from '../icons'
 import { trainingPlans } from '../data/training'
 import { useUserField } from '../hooks/useUserData'
 
-export default function WeekView({ currentWeek, onOpenRecipe, onNavigate }) {
+export default function WeekView({ currentWeek, daysIn = 0, onOpenRecipe, onNavigate }) {
   const [planId] = useUserField('trainingPlan', 'weights-3')
   const plan = trainingPlans[planId] || trainingPlans['weights-3']
   const [expanded, setExpanded] = useState(currentWeek || 1)
+
+  // Day 7 of the current week → tomorrow a new week opens. Used to flag the
+  // next (still locked) row with a "opens tomorrow" hint.
+  const dayOfWeek = (daysIn % 7) + 1
+  const opensTomorrow = dayOfWeek === 7 && currentWeek < 8
 
   return (
     <div className="view">
@@ -47,25 +53,49 @@ export default function WeekView({ currentWeek, onOpenRecipe, onNavigate }) {
       )}
 
       {weeks.map(w => {
-        const isExpanded = expanded === w.id
+        const isLocked = w.number > currentWeek
+        const isExpanded = !isLocked && expanded === w.id
         const isCurrent = currentWeek === w.number
+        const isNextUp = w.number === currentWeek + 1
+        const showOpensTomorrow = isNextUp && opensTomorrow
+
+        const rowClass = [
+          'week-row',
+          isExpanded ? 'expanded' : '',
+          isCurrent ? 'active' : '',
+          isLocked ? 'locked' : '',
+          showOpensTomorrow ? 'opens-tomorrow' : ''
+        ].filter(Boolean).join(' ')
+
         return (
-          <div key={w.id} className={`week-row ${isExpanded ? 'expanded' : ''} ${isCurrent ? 'active' : ''}`}>
+          <div key={w.id} className={rowClass}>
             <div
               className="week-row-header"
-              onClick={() => setExpanded(isExpanded ? null : w.id)}
+              onClick={() => {
+                if (isLocked) return
+                setExpanded(isExpanded ? null : w.id)
+              }}
+              aria-disabled={isLocked}
             >
               <div className="week-row-number">
-                {w.icon ? <WeekIcon name={w.icon} size={22} /> : w.number}
+                {isLocked
+                  ? <LockIcon size={20} />
+                  : (w.icon ? <WeekIcon name={w.icon} size={22} /> : w.number)}
               </div>
               <div className="week-row-body">
                 <div className="week-row-title">
                   {w.title}
                   {isCurrent && <span className="badge" style={{ marginRight: 8 }}>השבוע שלך</span>}
+                  {showOpensTomorrow && <span className="badge badge-soon" style={{ marginRight: 8 }}>נפתח מחר</span>}
+                  {isLocked && !showOpensTomorrow && (
+                    <span className="badge badge-locked" style={{ marginRight: 8 }}>נעול</span>
+                  )}
                 </div>
                 <div className="week-row-theme">{w.theme}</div>
               </div>
-              <div className="week-row-chevron">‹</div>
+              {isLocked
+                ? <div className="week-row-chevron week-row-lock-chevron"><LockIcon size={16} /></div>
+                : <div className="week-row-chevron">‹</div>}
             </div>
 
             {isExpanded && (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { daysBetween } from './hooks/useLocalStorage'
 import { useUserField, useUserDataReady } from './hooks/useUserData'
 import { useAuth } from './hooks/useAuth'
@@ -15,6 +15,7 @@ import Profile from './components/Profile'
 import OnboardingWizard from './components/OnboardingWizard'
 import InstallAppButton from './components/InstallAppButton'
 import LoginScreen from './components/LoginScreen'
+import NewWeekModal from './components/NewWeekModal'
 import { TabIcon, UserIcon } from './icons'
 
 const TABS = [
@@ -55,12 +56,25 @@ function AppAuthed() {
   const [height, setHeight] = useUserField('height', null)
   const [weights, setWeights] = useUserField('weights', [])
   const [favorites, setFavorites] = useUserField('favorites', [])
+  const [lastSeenWeek, setLastSeenWeek] = useUserField('lastSeenWeek', null)
   const [tab, setTab] = useState('home')
   const [openRecipeId, setOpenRecipeId] = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
 
-  const daysIn = startDate ? daysBetween(startDate) : 0
+  const daysIn = startDate ? Math.max(0, daysBetween(startDate)) : 0
   const currentWeek = Math.min(8, Math.floor(daysIn / 7) + 1)
+
+  // Initialize lastSeenWeek the first time this user reaches the app, so the
+  // "new week" modal does not fire on initial signup. After that, any time
+  // currentWeek advances past lastSeenWeek the modal shows once.
+  useEffect(() => {
+    if (startDate && lastSeenWeek == null) {
+      setLastSeenWeek(currentWeek)
+    }
+  }, [startDate, lastSeenWeek, currentWeek, setLastSeenWeek])
+
+  const showNewWeek =
+    startDate && lastSeenWeek != null && currentWeek > lastSeenWeek
 
   const profileIncomplete = !startDate || !height || (weights || []).length === 0 || !name
 
@@ -138,6 +152,7 @@ function AppAuthed() {
       {tab === 'weeks' && (
         <WeekView
           currentWeek={currentWeek}
+          daysIn={daysIn}
           onOpenRecipe={openRecipe}
           onNavigate={navigate}
         />
@@ -179,6 +194,17 @@ function AppAuthed() {
           </button>
         ))}
       </nav>
+
+      {showNewWeek && (
+        <NewWeekModal
+          weekNumber={currentWeek}
+          onDismiss={() => setLastSeenWeek(currentWeek)}
+          onOpenWeeks={() => {
+            setLastSeenWeek(currentWeek)
+            navigate('weeks')
+          }}
+        />
+      )}
     </div>
   )
 }

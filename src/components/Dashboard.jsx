@@ -104,7 +104,7 @@ export default function Dashboard({ currentWeek, startDate, gender, name, hasSta
             <h2>המסע מתחיל בקרוב</h2>
             <div className="theme">
               {daysUntilStart === 1
-                ? 'מחר נתחיל בשבוע הראשון — הצפת מילופיט.'
+                ? 'מחר נתחיל בשבוע הראשון — שבוע ההצפה.'
                 : `עוד ${daysUntilStart} ימים ונתחיל יחד את השבוע הראשון.`}
             </div>
           </div>

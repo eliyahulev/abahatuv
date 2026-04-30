@@ -158,12 +158,12 @@ export default function Dashboard({ currentWeek, startDate, gender, name, hasSta
       >
         <div className="space-between">
           <h3 className="card-title card-title-with-icon" style={{ margin: 0, color: 'white' }}>
-            <ShakeIcon size={22} /> שייק המילופיט
+            <ShakeIcon size={22} /> שייק
           </h3>
           <span style={{ color: 'white' }}>←</span>
         </div>
         <p style={{ marginTop: 8, opacity: 0.95, fontSize: 13 }}>
-          המלכים הגדולים של מילופיט — 4–5 דקות הכנה בלבד.
+          המלכים הגדולים של הירקות המנקים — 4–5 דקות הכנה בלבד.
         </p>
       </div>
 

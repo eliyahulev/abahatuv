@@ -45,7 +45,7 @@ export const recipes = [
   },
   {
     id: 'milufit-shakshuka',
-    title: 'שקשוקה מילופיט',
+    title: 'שקשוקה',
     week: 3,
     category: 'ארוחה עיקרית',
     ingredients: [
@@ -281,7 +281,7 @@ export const recipes = [
   },
   {
     id: 'milufit-bean-soup',
-    title: 'מרק שעועית מילופיט במיוחד',
+    title: 'מרק שעועית במיוחד',
     week: 5,
     category: 'מרק',
     ingredients: [

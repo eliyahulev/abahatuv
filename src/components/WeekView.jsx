@@ -17,6 +17,7 @@ import {
 import { trainingPlans } from '../data/training'
 import { useUserField } from '../hooks/useUserData'
 import { startsInLabel } from '../hooks/useLocalStorage'
+import { getWeekRowState } from '../lib/weekRowState'
 
 export default function WeekView({
   currentWeek,
@@ -30,10 +31,7 @@ export default function WeekView({
   const plan = trainingPlans[planId] || trainingPlans['weights-3']
   const [expanded, setExpanded] = useState(currentWeek || 1)
 
-  // Day 7 of the current week → tomorrow a new week opens. Used to flag the
-  // next (still locked) row with a "opens tomorrow" hint.
   const dayOfWeek = (daysIn % 7) + 1
-  const opensTomorrow = hasStarted && dayOfWeek === 7 && currentWeek < 8
 
   return (
     <div className="view">
@@ -61,18 +59,20 @@ export default function WeekView({
       )}
 
       {weeks.map(w => {
-        // When the user's start date is still in the future, every week —
-        // including week 1 — is locked. Week 1 gets a "starts in N days"
-        // badge that mirrors the opens-tomorrow style on the day before.
-        const isLocked = !hasStarted || w.number > currentWeek
+        const {
+          isLocked,
+          isCurrent,
+          showOpensTomorrow,
+          showStartsBadge,
+          badgeLabel
+        } = getWeekRowState({
+          weekNumber: w.number,
+          currentWeek,
+          dayOfWeek,
+          hasStarted,
+          daysUntilStart
+        })
         const isExpanded = !isLocked && expanded === w.id
-        const isCurrent = hasStarted && currentWeek === w.number
-        const isNextUp = hasStarted && w.number === currentWeek + 1
-        const isFirstUpPreStart = !hasStarted && w.number === 1
-        const showOpensTomorrow =
-          (isNextUp && opensTomorrow) ||
-          (isFirstUpPreStart && daysUntilStart === 1)
-        const showStartsBadge = isFirstUpPreStart && daysUntilStart > 1
 
         const rowClass = [
           'week-row',
@@ -104,7 +104,7 @@ export default function WeekView({
                   {isCurrent && <span className="badge" style={{ marginRight: 8 }}>השבוע שלך</span>}
                   {showOpensTomorrow && (
                     <span className="badge badge-soon" style={{ marginRight: 8 }}>
-                      {isFirstUpPreStart ? 'מתחיל מחר' : 'נפתח מחר'}
+                      {badgeLabel}
                     </span>
                   )}
                   {showStartsBadge && (

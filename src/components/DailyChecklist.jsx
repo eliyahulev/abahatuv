@@ -1,21 +1,8 @@
 import React from 'react'
-import { weeks } from '../data/weeks'
 import { CheckMarkIcon } from '../icons'
 import { todayKey } from '../hooks/useLocalStorage'
 import { useUserMapEntry } from '../hooks/useUserData'
-
-// Accumulate all tasks from week 1 up through the current week
-export function getTasksForWeek(weekNumber) {
-  const tasks = []
-  for (const w of weeks) {
-    if (w.number <= weekNumber) {
-      for (const t of w.missionTasks) {
-        tasks.push({ ...t, weekNumber: w.number })
-      }
-    }
-  }
-  return tasks
-}
+import { getTasksForWeek } from '../lib/weekTasks'
 
 export default function DailyChecklist({ weekNumber }) {
   const date = todayKey()

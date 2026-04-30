@@ -33,6 +33,15 @@ describe('daysBetween', () => {
     expect(daysBetween(undefined)).toBe(0)
     expect(daysBetween('')).toBe(0)
   })
+
+  it('counts whole days correctly across a DST transition', () => {
+    // Israel and most of Europe spring forward in late March. With the
+    // older local-time implementation, this 49-day span got compressed
+    // to 48 because the spring-forward day is one hour shorter.
+    const to = new Date('2026-04-30T10:00:00')
+    expect(daysBetween('2026-03-12', to)).toBe(49)
+    expect(daysBetween('2026-01-20', to)).toBe(100)
+  })
 })
 
 describe('startsInLabel', () => {

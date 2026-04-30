@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { daysBetween, startsInLabel } from './hooks/useLocalStorage'
+import { startsInLabel } from './hooks/useLocalStorage'
+import { getProgramProgress } from './lib/programProgress'
 import { useUserField, useUserDataReady } from './hooks/useUserData'
 import { useAuth } from './hooks/useAuth'
 import Dashboard from './components/Dashboard'
@@ -61,11 +62,8 @@ function AppAuthed() {
   const [openRecipeId, setOpenRecipeId] = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
 
-  const rawDays = startDate ? daysBetween(startDate) : 0
-  const hasStarted = !!startDate && rawDays >= 0
-  const daysIn = Math.max(0, rawDays)
-  const daysUntilStart = Math.max(0, -rawDays)
-  const currentWeek = hasStarted ? Math.min(8, Math.floor(daysIn / 7) + 1) : 0
+  const { hasStarted, daysIn, daysUntilStart, currentWeek } =
+    getProgramProgress(startDate)
 
   // Initialize lastSeenWeek the first time this user reaches the app, so the
   // "new week" modal does not fire on initial signup. After that, any time

@@ -4,6 +4,7 @@ import { WeekIcon, ClockIcon, ShakeIcon, SparklesIcon, CalendarIcon } from '../i
 import { WaterWidget, formatLiters, GOAL_CUPS } from './WaterTracker'
 import DailyChecklist from './DailyChecklist'
 import { getTasksForWeek } from '../lib/weekTasks'
+import { getStreak } from '../lib/waterStreak'
 import { todayKey, daysBetween, startsInLabel } from '../hooks/useLocalStorage'
 import { useUserField, useUserMapEntry } from '../hooks/useUserData'
 import { phrasesFor, getPhraseForDay } from '../data/motivation'
@@ -42,21 +43,6 @@ function MotivationCard({ gender }) {
   )
 }
 
-function getStreak(log, goal = GOAL_CUPS) {
-  // consecutive days ending today (or yesterday) meeting water goal
-  const today = new Date()
-  let streak = 0
-  for (let i = 0; i < 60; i++) {
-    const d = new Date(today)
-    d.setDate(today.getDate() - i)
-    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
-    const cups = log[key] || 0
-    if (cups >= goal) streak++
-    else if (i !== 0) break // allow today to not be done yet
-  }
-  return streak
-}
-
 function timeGreeting() {
   const h = new Date().getHours()
   if (h >= 5 && h < 12) return 'בוקר טוב'
@@ -73,7 +59,7 @@ export default function Dashboard({ currentWeek, startDate, gender, name, hasSta
   const dayOfWeek = hasStarted && startDate
     ? (daysBetween(startDate) % 7) + 1
     : 1
-  const streak = getStreak(waterLog)
+  const streak = getStreak(waterLog, GOAL_CUPS)
 
   const weekTasks = hasStarted ? getTasksForWeek(currentWeek) : []
   const doneCount = weekTasks.filter(t => tasksDone[t.id]).length

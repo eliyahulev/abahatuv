@@ -11,11 +11,14 @@ export const todayKey = () => {
 
 export const daysBetween = (fromIso, toDate = new Date()) => {
   if (!fromIso) return 0
-  const from = new Date(fromIso + 'T00:00:00')
+  // Anchor both ends at UTC midnight by year/month/day so DST transitions
+  // (e.g. losing an hour the night clocks spring forward) cannot turn a
+  // 49-day span into 48.
+  const [y, m, d] = fromIso.split('-').map(Number)
+  const fromUtc = Date.UTC(y, m - 1, d)
   const to = new Date(toDate)
-  to.setHours(0, 0, 0, 0)
-  from.setHours(0, 0, 0, 0)
-  return Math.floor((to - from) / (1000 * 60 * 60 * 24))
+  const toUtc = Date.UTC(to.getFullYear(), to.getMonth(), to.getDate())
+  return Math.floor((toUtc - fromUtc) / (1000 * 60 * 60 * 24))
 }
 
 // Hebrew label for "starts in N days" used while the user's startDate is in

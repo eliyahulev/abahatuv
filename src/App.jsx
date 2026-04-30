@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { daysBetween } from './hooks/useLocalStorage'
+import { daysBetween, startsInLabel } from './hooks/useLocalStorage'
 import { useUserField, useUserDataReady } from './hooks/useUserData'
 import { useAuth } from './hooks/useAuth'
 import Dashboard from './components/Dashboard'
@@ -61,12 +61,17 @@ function AppAuthed() {
   const [openRecipeId, setOpenRecipeId] = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
 
-  const daysIn = startDate ? Math.max(0, daysBetween(startDate)) : 0
-  const currentWeek = Math.min(8, Math.floor(daysIn / 7) + 1)
+  const rawDays = startDate ? daysBetween(startDate) : 0
+  const hasStarted = !!startDate && rawDays >= 0
+  const daysIn = Math.max(0, rawDays)
+  const daysUntilStart = Math.max(0, -rawDays)
+  const currentWeek = hasStarted ? Math.min(8, Math.floor(daysIn / 7) + 1) : 0
 
   // Initialize lastSeenWeek the first time this user reaches the app, so the
   // "new week" modal does not fire on initial signup. After that, any time
-  // currentWeek advances past lastSeenWeek the modal shows once.
+  // currentWeek advances past lastSeenWeek the modal shows once. When the
+  // user picks a future start date this initializes to 0, so week 1 fires
+  // its modal once the start day arrives.
   useEffect(() => {
     if (startDate && lastSeenWeek == null) {
       setLastSeenWeek(currentWeek)
@@ -74,7 +79,7 @@ function AppAuthed() {
   }, [startDate, lastSeenWeek, currentWeek, setLastSeenWeek])
 
   const showNewWeek =
-    startDate && lastSeenWeek != null && currentWeek > lastSeenWeek
+    hasStarted && lastSeenWeek != null && currentWeek > lastSeenWeek
 
   const profileIncomplete = !startDate || !height || (weights || []).length === 0 || !name
 
@@ -137,7 +142,9 @@ function AppAuthed() {
           <UserIcon size={16} />
         </button>
         <h1> מילופיט</h1>
-        <div className="sub">  שבוע {currentWeek}/8</div>
+        <div className="sub">
+          {hasStarted ? `שבוע ${currentWeek}/8` : startsInLabel(daysUntilStart)}
+        </div>
       </header>
 
       {tab === 'home' && (
@@ -146,6 +153,8 @@ function AppAuthed() {
           startDate={startDate}
           gender={gender}
           name={name}
+          hasStarted={hasStarted}
+          daysUntilStart={daysUntilStart}
           onNavigate={navigate}
         />
       )}
@@ -153,6 +162,8 @@ function AppAuthed() {
         <WeekView
           currentWeek={currentWeek}
           daysIn={daysIn}
+          hasStarted={hasStarted}
+          daysUntilStart={daysUntilStart}
           onOpenRecipe={openRecipe}
           onNavigate={navigate}
         />

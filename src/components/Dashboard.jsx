@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { weeks } from '../data/weeks'
-import { WeekIcon, ClockIcon, ShakeIcon, SparklesIcon } from '../icons'
+import { WeekIcon, ClockIcon, ShakeIcon, SparklesIcon, CalendarIcon } from '../icons'
 import { WaterWidget, formatLiters, GOAL_CUPS } from './WaterTracker'
 import DailyChecklist, { getTasksForWeek } from './DailyChecklist'
-import { todayKey, daysBetween } from '../hooks/useLocalStorage'
+import { todayKey, daysBetween, startsInLabel } from '../hooks/useLocalStorage'
 import { useUserField, useUserMapEntry } from '../hooks/useUserData'
 import { phrasesFor, getPhraseForDay } from '../data/motivation'
 
@@ -64,17 +64,17 @@ function timeGreeting() {
   return 'לילה טוב'
 }
 
-export default function Dashboard({ currentWeek, startDate, gender, name, onNavigate }) {
+export default function Dashboard({ currentWeek, startDate, gender, name, hasStarted = true, daysUntilStart = 0, onNavigate }) {
   const [waterLog] = useUserField('waterLog', {})
   const [tasksDone] = useUserMapEntry('tasks', todayKey(), {})
 
   const week = weeks.find(w => w.number === currentWeek) || weeks[0]
-  const dayOfWeek = startDate
+  const dayOfWeek = hasStarted && startDate
     ? (daysBetween(startDate) % 7) + 1
     : 1
   const streak = getStreak(waterLog)
 
-  const weekTasks = getTasksForWeek(currentWeek)
+  const weekTasks = hasStarted ? getTasksForWeek(currentWeek) : []
   const doneCount = weekTasks.filter(t => tasksDone[t.id]).length
 
   return (
@@ -87,34 +87,51 @@ export default function Dashboard({ currentWeek, startDate, gender, name, onNavi
         </div>
       )}
 
-      <div className="hero-week">
-        <div className="big-icon"><WeekIcon name={week.icon} size={52} /></div>
-        <div style={{ flex: 1 }}>
-          <div className="hero-label">שבוע {week.number} · יום {dayOfWeek}</div>
-          <h2>{week.title}</h2>
-          <div className="theme">{week.theme}</div>
+      {hasStarted ? (
+        <div className="hero-week">
+          <div className="big-icon"><WeekIcon name={week.icon} size={52} /></div>
+          <div style={{ flex: 1 }}>
+            <div className="hero-label">שבוע {week.number} · יום {dayOfWeek}</div>
+            <h2>{week.title}</h2>
+            <div className="theme">{week.theme}</div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="hero-week hero-prestart">
+          <div className="big-icon"><CalendarIcon size={48} /></div>
+          <div style={{ flex: 1 }}>
+            <div className="hero-label">{startsInLabel(daysUntilStart)}</div>
+            <h2>המסע מתחיל בקרוב</h2>
+            <div className="theme">
+              {daysUntilStart === 1
+                ? 'מחר נתחיל בשבוע הראשון — הצפת מילופיט.'
+                : `עוד ${daysUntilStart} ימים ונתחיל יחד את השבוע הראשון.`}
+            </div>
+          </div>
+        </div>
+      )}
 
       <MotivationCard gender={gender} />
 
-      <div className="stats-row">
-        <div className="stat-card">
-          <div className="stat-value">{formatLiters((waterLog[todayKey()] || 0) * 0.25)}</div>
-          <div className="stat-label">ליטר מים</div>
+      {hasStarted && (
+        <div className="stats-row">
+          <div className="stat-card">
+            <div className="stat-value">{formatLiters((waterLog[todayKey()] || 0) * 0.25)}</div>
+            <div className="stat-label">ליטר מים</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-value">{doneCount}/{weekTasks.length}</div>
+            <div className="stat-label">משימות היום</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-value">{streak}</div>
+            <div className="stat-label">ימי רצף</div>
+          </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{doneCount}/{weekTasks.length}</div>
-          <div className="stat-label">משימות היום</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{streak}</div>
-          <div className="stat-label">ימי רצף</div>
-        </div>
-      </div>
+      )}
 
       <WaterWidget />
-      <DailyChecklist weekNumber={currentWeek} />
+      {hasStarted && <DailyChecklist weekNumber={currentWeek} />}
 
       {currentWeek >= 6 && (
         <div

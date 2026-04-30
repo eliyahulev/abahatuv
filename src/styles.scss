@@ -503,6 +503,25 @@ select {
   }
 }
 
+.hero-week.hero-prestart {
+  background: linear-gradient(135deg, var(--purple-100), var(--purple-200));
+  color: var(--purple-800);
+
+  .hero-label {
+    font-weight: 700;
+    font-size: 13px;
+    opacity: 1;
+    color: var(--purple-700);
+  }
+  .theme {
+    color: var(--gray-700);
+    opacity: 1;
+  }
+  .big-icon {
+    color: var(--purple-700);
+  }
+}
+
 .stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1023,7 +1042,8 @@ select {
   }
 }
 
-.week-row.locked.opens-tomorrow {
+.week-row.locked.opens-tomorrow,
+.week-row.locked.starts-soon {
   background: var(--purple-50);
   border-color: var(--purple-200);
 

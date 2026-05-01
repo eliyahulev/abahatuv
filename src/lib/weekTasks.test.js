@@ -2,6 +2,23 @@ import { describe, it, expect } from 'vitest'
 import { getTasksForWeek } from './weekTasks'
 import { weeks } from '../data/weeks'
 
+const isExpired = (t, weekNumber) =>
+  typeof t.endsAfterWeek === 'number' && weekNumber > t.endsAfterWeek
+
+const expectedCount = (weekNumber) =>
+  weeks
+    .filter(w => w.number <= weekNumber)
+    .reduce(
+      (sum, w) =>
+        sum +
+        w.missionTasks.filter(t => {
+          if (t.transient && w.number !== weekNumber) return false
+          if (isExpired(t, weekNumber)) return false
+          return true
+        }).length,
+      0
+    )
+
 describe('getTasksForWeek', () => {
   it('returns an empty list for week 0 (pre-start)', () => {
     expect(getTasksForWeek(0)).toEqual([])
@@ -18,23 +35,48 @@ describe('getTasksForWeek', () => {
     expect(tasks.every(t => t.weekNumber === 1)).toBe(true)
   })
 
-  it('accumulates tasks from every preceding week', () => {
-    // Week 3 should contain everything from weeks 1, 2, and 3.
+  it('keeps transient tasks on the week they belong to', () => {
+    expect(getTasksForWeek(1).some(t => t.id === 'w1-eat-normal')).toBe(true)
+    expect(getTasksForWeek(2).some(t => t.id === 'w2-fruit')).toBe(true)
+  })
+
+  it('drops the transient w1-eat-normal task from week 2 onward', () => {
+    for (const week of [2, 3, 4, 5, 8]) {
+      const tasks = getTasksForWeek(week)
+      expect(tasks.some(t => t.id === 'w1-eat-normal')).toBe(false)
+    }
+  })
+
+  it('drops the transient w2-fruit task from week 3 onward', () => {
+    for (const week of [3, 4, 5, 8]) {
+      const tasks = getTasksForWeek(week)
+      expect(tasks.some(t => t.id === 'w2-fruit')).toBe(false)
+    }
+  })
+
+  it('keeps w5-avoid-nuts through week 7 (its endsAfterWeek)', () => {
+    for (const week of [5, 6, 7]) {
+      const tasks = getTasksForWeek(week)
+      expect(tasks.some(t => t.id === 'w5-avoid-nuts')).toBe(true)
+    }
+  })
+
+  it('drops w5-avoid-nuts in week 8 (maintenance)', () => {
+    const tasks = getTasksForWeek(8)
+    expect(tasks.some(t => t.id === 'w5-avoid-nuts')).toBe(false)
+  })
+
+  it('accumulates non-transient tasks from every preceding week', () => {
     const tasks = getTasksForWeek(3)
-    const expected =
-      weeks[0].missionTasks.length +
-      weeks[1].missionTasks.length +
-      weeks[2].missionTasks.length
-    expect(tasks).toHaveLength(expected)
+    expect(tasks).toHaveLength(expectedCount(3))
 
     const seenWeeks = new Set(tasks.map(t => t.weekNumber))
     expect(seenWeeks).toEqual(new Set([1, 2, 3]))
   })
 
-  it('includes every task by week 8', () => {
+  it('includes every non-transient task by week 8', () => {
     const tasks = getTasksForWeek(8)
-    const total = weeks.reduce((sum, w) => sum + w.missionTasks.length, 0)
-    expect(tasks).toHaveLength(total)
+    expect(tasks).toHaveLength(expectedCount(8))
   })
 
   it('tags each task with its source weekNumber', () => {

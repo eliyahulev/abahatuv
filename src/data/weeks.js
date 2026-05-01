@@ -1,5 +1,7 @@
 // Weekly roadmap — cumulative per week (מקור: אתגר החיטוב)
 // Each week is cumulative — later weeks inherit missionTasks from earlier weeks.
+// Tasks marked `transient: true` apply only to their own week and do not carry forward.
+// Tasks with `endsAfterWeek: N` carry forward up to and including week N, then drop off.
 
 export const weeks = [
   {
@@ -23,7 +25,8 @@ export const weeks = [
       {
         id: 'w1-eat-normal',
         short: 'להמשיך לאכול כרגיל — לא לשנות שום דבר אחר בתזונה',
-        long: 'בשלב זה אנחנו רק מוסיפים מים. כל שינוי אחר בתזונה יבוא בשבועות הבאים.'
+        long: 'בשלב זה אנחנו רק מוסיפים מים. כל שינוי אחר בתזונה יבוא בשבועות הבאים.',
+        transient: true
       }
     ],
     physiology: [
@@ -72,7 +75,8 @@ export const weeks = [
       {
         id: 'w2-fruit',
         short: 'ניתן לאכול פירות ללא הגבלה',
-        long: 'פרט לפירות יבשים או מסוכרים.'
+        long: 'פרט לפירות יבשים או מסוכרים.',
+        transient: true
       }
     ],
     physiology: [
@@ -210,7 +214,8 @@ export const weeks = [
       {
         id: 'w5-avoid-nuts',
         short: 'הימנעות זמנית משקדים, אגוזים ובוטנים',
-        long: 'הגורמים בקלות לפתיחה בצריכת הקלוריות.'
+        long: 'הגורמים בקלות לפתיחה בצריכת הקלוריות.',
+        endsAfterWeek: 7
       }
     ],
     physiology: [

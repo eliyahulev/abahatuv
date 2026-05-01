@@ -7,10 +7,11 @@ import { weeks } from '../data/weeks'
 export function getTasksForWeek(weekNumber) {
   const tasks = []
   for (const w of weeks) {
-    if (w.number <= weekNumber) {
-      for (const t of w.missionTasks) {
-        tasks.push({ ...t, weekNumber: w.number })
-      }
+    if (w.number > weekNumber) continue
+    for (const t of w.missionTasks) {
+      if (t.transient && w.number !== weekNumber) continue
+      if (typeof t.endsAfterWeek === 'number' && weekNumber > t.endsAfterWeek) continue
+      tasks.push({ ...t, weekNumber: w.number })
     }
   }
   return tasks

@@ -2467,7 +2467,7 @@ select {
 
 .plan-picker {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
   gap: 6px;
   margin-bottom: 14px;
 }

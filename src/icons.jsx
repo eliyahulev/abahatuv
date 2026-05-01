@@ -344,6 +344,34 @@ export function LockIcon(props) {
   )
 }
 
+export function MenuIcon(props) {
+  return (
+    <Svg {...props}>
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </Svg>
+  )
+}
+
+export function BookIcon(props) {
+  return (
+    <Svg {...props}>
+      <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5z" />
+      <path d="M4 4.5v18" />
+    </Svg>
+  )
+}
+
+export function XIcon(props) {
+  return (
+    <Svg {...props}>
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </Svg>
+  )
+}
+
 export function StatusDotIcon({ color, size = 10, className }) {
   return (
     <svg

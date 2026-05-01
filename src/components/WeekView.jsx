@@ -247,7 +247,7 @@ function recipeTitle(id) {
     'oatmeal-ricotta': 'מעדן שיבולת שועל',
     'simple-tofu': 'טופו פשוט',
     'coconut-curry': 'קארי מהמם',
-    'milufit-bean-soup': 'מרק שעועית במיוחד',
+    'milufit-bean-soup': 'מרק שעועית מיוחד',
     'spinach-pastida': 'פשטידת תרד',
     'home-ketchup': 'קטשופ ביתי',
     'tofu-chicken-spinach': 'טופו/עוף ותרד',

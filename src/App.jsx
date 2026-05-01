@@ -10,6 +10,7 @@ import RecipeList from './components/RecipeList'
 import FoodLists from './components/FoodLists'
 import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
+import Guides from './components/Guides'
 import MiluFitShake from './components/MiluFitShake'
 import Training from './components/Training'
 import Profile from './components/Profile'
@@ -17,7 +18,7 @@ import OnboardingWizard from './components/OnboardingWizard'
 import InstallAppButton from './components/InstallAppButton'
 import LoginScreen from './components/LoginScreen'
 import NewWeekModal from './components/NewWeekModal'
-import { TabIcon, UserIcon } from './icons'
+import { TabIcon, UserIcon, MenuIcon, XIcon, SosIcon, BookIcon } from './icons'
 
 const TABS = [
   { id: 'home',     label: 'בית' },
@@ -26,8 +27,12 @@ const TABS = [
   { id: 'water',    label: 'מים' },
   { id: 'recipes',  label: 'מתכונים' },
   { id: 'foods',    label: 'מאכלים' },
-  { id: 'window',   label: 'חלון' },
-  { id: 'sos',      label: 'SOS' }
+  { id: 'window',   label: 'חלון' }
+]
+
+const MENU_ITEMS = [
+  { id: 'guides', label: 'מדריכים', Icon: BookIcon },
+  { id: 'sos', label: 'SOS', Icon: SosIcon }
 ]
 
 function BootLoader() {
@@ -51,6 +56,7 @@ export default function App() {
 }
 
 function AppAuthed() {
+  const { user } = useAuth()
   const [startDate, setStartDate] = useUserField('startDate', null)
   const [name, setName] = useUserField('name', '')
   const [gender, setGender] = useUserField('gender', 'male')
@@ -60,7 +66,9 @@ function AppAuthed() {
   const [lastSeenWeek, setLastSeenWeek] = useUserField('lastSeenWeek', null)
   const [tab, setTab] = useState('home')
   const [openRecipeId, setOpenRecipeId] = useState(null)
+  const [openGuideId, setOpenGuideId] = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const { hasStarted, daysIn, daysUntilStart, currentWeek } =
     getProgramProgress(startDate)
@@ -87,6 +95,7 @@ function AppAuthed() {
 
   const navigate = (target) => {
     setOpenRecipeId(null)
+    if (target !== 'guides') setOpenGuideId(null)
     setTab(target)
     window.scrollTo(0, 0)
   }
@@ -129,21 +138,86 @@ function AppAuthed() {
   return (
     <div className="app">
       <header className="app-header">
-        <InstallAppButton className="install-app-btn-header" />
         <button
           type="button"
-          className={`profile-btn-header ${tab === 'profile' ? 'active' : ''}`}
+          className={`profile-btn-header ${tab === 'profile' ? 'active' : ''} ${user?.photoURL ? 'has-photo' : ''}`}
           onClick={() => navigate(tab === 'profile' ? 'home' : 'profile')}
           aria-label="הפרופיל שלי"
           title="הפרופיל שלי"
         >
-          <UserIcon size={16} />
+          {user?.photoURL ? (
+            <img
+              className="profile-btn-photo"
+              src={user.photoURL}
+              alt=""
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <UserIcon size={16} />
+          )}
+          {name && <span className="profile-btn-name">{name.split(' ')[0]}</span>}
         </button>
-        <h1> מילופיט</h1>
-        <div className="sub">
-          {hasStarted ? `שבוע ${currentWeek}/8` : startsInLabel(daysUntilStart)}
+        <button
+          type="button"
+          className="menu-btn-header"
+          onClick={() => setMenuOpen(true)}
+          aria-label="תפריט"
+          title="תפריט"
+        >
+          <MenuIcon size={16} />
+        </button>
+        <div className="app-header-title">
+          <h1>מילופיט</h1>
+          <div className="sub">
+            {hasStarted ? `שבוע ${currentWeek}/8` : startsInLabel(daysUntilStart)}
+          </div>
         </div>
       </header>
+
+      {menuOpen && (
+        <div className="drawer-backdrop" onClick={() => setMenuOpen(false)}>
+          <aside
+            className="drawer"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-label="תפריט"
+          >
+            <div className="drawer-head">
+              <span className="drawer-title">תפריט</span>
+              <button
+                type="button"
+                className="drawer-close"
+                onClick={() => setMenuOpen(false)}
+                aria-label="סגור"
+              >
+                <XIcon size={20} />
+              </button>
+            </div>
+            <nav className="drawer-nav">
+              {MENU_ITEMS.map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`drawer-item ${tab === id ? 'active' : ''}`}
+                  onClick={() => {
+                    setMenuOpen(false)
+                    navigate(id)
+                  }}
+                >
+                  <Icon size={20} />
+                  <span>{label}</span>
+                </button>
+              ))}
+              <InstallAppButton
+                className="drawer-item"
+                label="התקנת האפליקציה"
+                iconSize={20}
+                onActivate={() => setMenuOpen(false)}
+              />
+            </nav>
+          </aside>
+        </div>
+      )}
 
       {tab === 'home' && (
         <Dashboard
@@ -177,6 +251,9 @@ function AppAuthed() {
       )}
       {tab === 'foods' && <FoodLists />}
       {tab === 'window' && <EatingWindow />}
+      {tab === 'guides' && (
+        <Guides openId={openGuideId} setOpenId={setOpenGuideId} />
+      )}
       {tab === 'sos' && <Emergency />}
       {tab === 'shake' && <MiluFitShake />}
       {tab === 'training' && <Training />}

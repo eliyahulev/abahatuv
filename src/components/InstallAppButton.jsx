@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { usePwaInstall } from '../hooks/usePwaInstall'
 
-export default function InstallAppButton({ className = '' }) {
+export default function InstallAppButton({ className = '', label, iconSize = 16, onActivate }) {
   const { canInstall, hasNativePrompt, promptInstall, isIOS, isSafari } = usePwaInstall()
   const [showHint, setShowHint] = useState(false)
 
   if (!canInstall) return null
 
   const handleClick = async () => {
+    onActivate?.()
     if (hasNativePrompt) {
       await promptInstall()
     } else {
@@ -24,7 +25,7 @@ export default function InstallAppButton({ className = '' }) {
         aria-label="התקנת האפליקציה במכשיר"
         title="התקנת האפליקציה"
       >
-        <svg className="install-app-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <svg className="install-app-btn-icon" width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
             stroke="currentColor"
@@ -33,6 +34,7 @@ export default function InstallAppButton({ className = '' }) {
             strokeLinejoin="round"
           />
         </svg>
+        {label && <span className="install-app-btn-label">{label}</span>}
       </button>
       {showHint && (
         <InstallHintModal

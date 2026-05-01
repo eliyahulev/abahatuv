@@ -37,6 +37,21 @@ export function UserDataProvider({ children }) {
     return unsub
   }, [user?.uid])
 
+  // Mirror auth identity into the user doc so the admin view can render real
+  // names/emails. Runs once per session per uid; merge: true keeps user-edited
+  // fields (e.g. name) intact.
+  useEffect(() => {
+    if (!user) return
+    setDoc(doc(db, 'users', user.uid), {
+      email: user.email || null,
+      authDisplayName: user.displayName || null,
+      photoURL: user.photoURL || null,
+      lastLoginAt: new Date().toISOString()
+    }, { merge: true }).catch((e) => {
+      console.error('Identity sync failed', e)
+    })
+  }, [user?.uid])
+
   const setField = useCallback((fieldName, newValue, fallback) => {
     if (!user) return
     const current = dataRef.current || {}

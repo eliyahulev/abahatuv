@@ -11,6 +11,7 @@ import FoodLists from './components/FoodLists'
 import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
 import Guides from './components/Guides'
+import SuperAdmin from './components/SuperAdmin'
 import MiluFitShake from './components/MiluFitShake'
 import Training from './components/Training'
 import Profile from './components/Profile'
@@ -19,6 +20,7 @@ import InstallAppButton from './components/InstallAppButton'
 import LoginScreen from './components/LoginScreen'
 import NewWeekModal from './components/NewWeekModal'
 import { TabIcon, UserIcon, MenuIcon, XIcon, SosIcon, BookIcon } from './icons'
+import { isAdmin } from './lib/admin'
 
 const TABS = [
   { id: 'home',     label: 'בית' },
@@ -34,6 +36,8 @@ const MENU_ITEMS = [
   { id: 'guides', label: 'מדריכים', Icon: BookIcon },
   { id: 'sos', label: 'SOS', Icon: SosIcon }
 ]
+
+const ADMIN_MENU_ITEM = { id: 'admin', label: 'סופר אדמין', Icon: UserIcon }
 
 function BootLoader() {
   return (
@@ -194,7 +198,7 @@ function AppAuthed() {
               </button>
             </div>
             <nav className="drawer-nav">
-              {MENU_ITEMS.map(({ id, label, Icon }) => (
+              {(isAdmin(user) ? [...MENU_ITEMS, ADMIN_MENU_ITEM] : MENU_ITEMS).map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   type="button"
@@ -255,6 +259,7 @@ function AppAuthed() {
         <Guides openId={openGuideId} setOpenId={setOpenGuideId} />
       )}
       {tab === 'sos' && <Emergency />}
+      {tab === 'admin' && isAdmin(user) && <SuperAdmin />}
       {tab === 'shake' && <MiluFitShake />}
       {tab === 'training' && <Training />}
       {tab === 'profile' && (

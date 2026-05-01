@@ -1644,6 +1644,178 @@ select {
 }
 
 // ============================================================================
+//  Super admin
+// ============================================================================
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-card {
+  padding: 14px 16px;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-card-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.admin-card-photo,
+.admin-card-photo-fallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.admin-card-photo {
+  object-fit: cover;
+  border: 1.5px solid var(--gray-200);
+}
+
+.admin-card-photo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--purple-50);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.admin-card-id {
+  min-width: 0;
+}
+
+.admin-card-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--purple-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-card-email {
+  font-size: 12px;
+  color: var(--gray-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: ltr;
+  text-align: start;
+}
+
+.admin-card-week {
+  padding: 4px 10px;
+  background: var(--purple-50);
+  color: var(--purple-700);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.admin-card-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: var(--gray-100);
+  color: var(--gray-700);
+
+  &.tone-fresh {
+    background: rgba(72, 187, 120, 0.12);
+    color: #22543d;
+  }
+  &.tone-warm {
+    background: rgba(214, 158, 46, 0.14);
+    color: #744210;
+  }
+  &.tone-stale {
+    background: var(--gray-100);
+    color: var(--gray-600);
+  }
+}
+
+.admin-card-active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.admin-card-active-k {
+  opacity: 0.85;
+}
+
+.admin-card-active-v {
+  font-weight: 700;
+}
+
+.admin-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.admin-stat {
+  padding: 8px 6px;
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.admin-stat-k {
+  font-size: 11px;
+  color: var(--gray-600);
+}
+
+.admin-stat-v {
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-800);
+
+  &.up {
+    color: var(--accent-red);
+  }
+  &.down {
+    color: var(--accent-green);
+  }
+}
+
+.admin-card-foot {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--gray-200);
+  font-size: 12px;
+  color: var(--gray-600);
+}
+
+@media (min-width: 600px) {
+  .admin-card-stats {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+// ============================================================================
 //  Guides
 // ============================================================================
 

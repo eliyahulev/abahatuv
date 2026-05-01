@@ -1148,7 +1148,7 @@ select {
     background: var(--accent-yellow-dark);
   }
   &.expanded .week-row-chevron {
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
   }
 }
 .week-row-header {

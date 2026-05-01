@@ -28,7 +28,7 @@ export default function Guides({ openId, setOpenId }) {
               <div className="guide-card-title">{g.title}</div>
               <div className="guide-card-sub">{g.subtitle}</div>
             </div>
-            <span className="guide-card-chev">‹</span>
+            <span className="guide-card-chev">›</span>
           </button>
         ))}
       </div>

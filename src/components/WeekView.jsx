@@ -120,7 +120,7 @@ export default function WeekView({
               </div>
               {isLocked
                 ? <div className="week-row-chevron week-row-lock-chevron"><LockIcon size={16} /></div>
-                : <div className="week-row-chevron">‹</div>}
+                : <div className="week-row-chevron">›</div>}
             </div>
 
             {isExpanded && (

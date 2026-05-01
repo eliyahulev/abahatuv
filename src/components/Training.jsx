@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { trainingGoals, trainingPrinciples, trainingPlans, trainingPlanOrder } from '../data/training'
 import { ViewTitle, TrophyIcon, TargetIcon, LightbulbIcon, CheckMarkIcon } from '../icons'
 import { useUserField } from '../hooks/useUserData'
@@ -30,26 +30,14 @@ export default function Training() {
       </div>
 
 
-      <div className="plan-picker" role="tablist" aria-label="בחר תוכנית">
-        {trainingPlanOrder.map((id) => {
-          const p = trainingPlans[id]
-          return (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={planId === id}
-              className={`plan-pick-btn ${planId === id ? 'active' : ''}`}
-              onClick={() => {
-                setPlanId(id)
-                setOpenWorkoutIdx(0)
-              }}
-            >
-              {p.short}
-            </button>
-          )
-        })}
-      </div>
+      <PlanDropdown
+        value={planId}
+        options={trainingPlanOrder.map((id) => trainingPlans[id])}
+        onChange={(id) => {
+          setPlanId(id)
+          setOpenWorkoutIdx(0)
+        }}
+      />
 
       <div className="card plan-summary-card">
         <h3 className="card-title" style={{ margin: 0 }}>{plan.title}</h3>
@@ -107,6 +95,65 @@ export default function Training() {
           ))}
         </ol>
       </div>
+    </div>
+  )
+}
+
+function PlanDropdown({ value, options, onChange }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  const current = options.find((o) => o.id === value) || options[0]
+
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('touchstart', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('touchstart', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  return (
+    <div
+      className={`plan-dd ${open ? 'open' : ''} ${value === 'miluim' ? 'is-miluim' : ''}`}
+      ref={ref}
+    >
+      <button
+        type="button"
+        className="plan-dd-trigger"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span className="plan-dd-label">{current?.title}</span>
+        <span className="plan-dd-chev" aria-hidden>▾</span>
+      </button>
+      {open && (
+        <ul className="plan-dd-list" role="listbox">
+          {options.map((o) => {
+            const isSelected = o.id === value
+            return (
+              <li
+                key={o.id}
+                role="option"
+                aria-selected={isSelected}
+                className={`plan-dd-opt ${o.id === 'miluim' ? 'opt-miluim' : ''} ${isSelected ? 'selected' : ''}`}
+                onClick={() => { onChange(o.id); setOpen(false) }}
+              >
+                <span className="plan-dd-opt-title">{o.title}</span>
+                {isSelected && <span className="plan-dd-opt-check" aria-hidden>✓</span>}
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </div>
   )
 }

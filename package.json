@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "icons": "node scripts/generate-pwa-icons.mjs"
+    "icons": "node scripts/generate-pwa-icons.mjs",
+    "messaging:sw": "node scripts/generate-firebase-messaging-sw.mjs",
+    "prebuild": "node scripts/generate-firebase-messaging-sw.mjs",
+    "predev": "node scripts/generate-firebase-messaging-sw.mjs"
   },
   "dependencies": {
     "firebase": "^12.12.1",

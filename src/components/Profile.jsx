@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { todayKey, daysBetween } from '../hooks/useLocalStorage'
 import { useUserField, useResetData } from '../hooks/useUserData'
 import { calcBmi, bmiCategory, formatBmi } from '../data/bmi'
 import { CalendarIcon, DnaIcon, TargetIcon, TrophyIcon } from '../icons'
 import { useAuth } from '../hooks/useAuth'
+import { enablePushNotifications, pushSupportStatus, refreshPushTokenSilently } from '../lib/messaging'
 
 function sortWeights(list) {
   return [...list].sort((a, b) => a.date.localeCompare(b.date))
@@ -227,6 +228,8 @@ export default function Profile({ startDate, gender, name, currentWeek, onNaviga
         </div>
       )}
 
+      <NotificationsCard />
+
       <div className="card danger-zone">
         <h3 className="card-title danger-title">אזור מסוכן</h3>
         <p className="muted" style={{ marginTop: 0, marginBottom: 12, fontSize: 13 }}>
@@ -279,6 +282,78 @@ export default function Profile({ startDate, gender, name, currentWeek, onNaviga
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function NotificationsCard() {
+  const { user } = useAuth()
+  const [status, setStatus] = useState(() => pushSupportStatus())
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState(null)
+
+  useEffect(() => {
+    if (status === 'granted' && user?.uid) {
+      refreshPushTokenSilently(user.uid)
+    }
+  }, [status, user?.uid])
+
+  const enable = async () => {
+    if (!user?.uid) return
+    setBusy(true)
+    setErr(null)
+    try {
+      const res = await enablePushNotifications(user.uid)
+      setStatus(pushSupportStatus())
+      if (!res.ok && res.reason !== 'granted') {
+        setErr(res.reason === 'denied'
+          ? 'ההרשאה נחסמה. ניתן להפעיל מחדש דרך הגדרות הדפדפן.'
+          : 'לא ניתן להפעיל התראות במכשיר הזה.')
+      }
+    } catch (e) {
+      setErr(e?.message || 'שגיאה בהפעלת ההתראות.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (status === 'unsupported' || status === 'insecure') {
+    return (
+      <div className="card">
+        <h3 className="card-title">התראות</h3>
+        <p className="muted" style={{ margin: 0 }}>
+          המכשיר/דפדפן הזה לא תומך בהתראות דחיפה. במכשירי iPhone יש להתקין את האפליקציה למסך הבית כדי להפעיל התראות.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="card">
+      <h3 className="card-title">התראות</h3>
+      {status === 'granted' ? (
+        <p className="muted" style={{ margin: 0 }}>התראות פעילות. תקבלו עדכונים מצביקה כשיישלחו.</p>
+      ) : (
+        <>
+          <p className="muted" style={{ marginTop: 0 }}>
+            הפעילו התראות כדי לקבל עדכונים, תזכורות ומסרים מצביקה ישירות למכשיר.
+          </p>
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={enable}
+            disabled={busy}
+          >
+            {busy ? 'מפעיל…' : 'הפעל התראות'}
+          </button>
+          {status === 'denied' && (
+            <p className="muted small" style={{ marginTop: 8 }}>
+              ההרשאה חסומה. יש להפעיל מחדש דרך הגדרות הדפדפן/האתר.
+            </p>
+          )}
+        </>
+      )}
+      {err && <p className="muted small" style={{ marginTop: 8, color: 'var(--accent-red)' }}>{err}</p>}
     </div>
   )
 }

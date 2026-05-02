@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { collection, getDocs } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
+import { db, auth } from '../lib/firebase'
 import { getProgramProgress } from '../lib/programProgress'
 import { ViewTitle, UserIcon } from '../icons'
 
@@ -123,6 +123,11 @@ export default function SuperAdmin() {
     })
   }, [users])
 
+  const subscribers = useMemo(
+    () => rows.reduce((sum, u) => sum + ((u.fcmTokens || []).length > 0 ? 1 : 0), 0),
+    [rows]
+  )
+
   if (status === 'loading') {
     return (
       <div className="view">
@@ -148,10 +153,152 @@ export default function SuperAdmin() {
     <div className="view">
       <ViewTitle Icon={UserIcon}>סופר אדמין</ViewTitle>
       <p className="view-subtitle">{rows.length} משתמשים</p>
+      <BroadcastCard subscribers={subscribers} />
       <div className="admin-list">
         {rows.map(u => <AdminRow key={u.uid} u={u} />)}
       </div>
     </div>
+  )
+}
+
+function BroadcastCard({ subscribers }) {
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
+  const [url, setUrl] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [feedback, setFeedback] = useState(null)
+
+  const send = async () => {
+    setFeedback(null)
+    if (!title.trim() && !body.trim()) {
+      setFeedback({ type: 'error', text: 'יש למלא כותרת או תוכן.' })
+      return
+    }
+    if (!window.confirm(`לשלוח התראה ל-${subscribers} מנויים?`)) return
+    setBusy(true)
+    try {
+      await addDoc(collection(db, 'pushBroadcasts'), {
+        title: title.trim(),
+        body: body.trim(),
+        url: url.trim() || null,
+        createdAt: serverTimestamp(),
+        createdBy: auth.currentUser?.uid || null,
+        createdByEmail: auth.currentUser?.email || null,
+        status: 'pending'
+      })
+      setTitle('')
+      setBody('')
+      setUrl('')
+      setFeedback({ type: 'ok', text: 'נשלח לתור. השליחה תתבצע בענן תוך מספר שניות.' })
+    } catch (e) {
+      setFeedback({ type: 'error', text: e?.message || 'השליחה נכשלה.' })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const titleTrimmed = title.trim()
+  const bodyTrimmed = body.trim()
+  const canSend = !busy && subscribers > 0 && (titleTrimmed.length > 0 || bodyTrimmed.length > 0)
+
+  return (
+    <div className="broadcast-card">
+      <div className="broadcast-card-head">
+        <div className="broadcast-card-icon" aria-hidden>
+          <BellIcon />
+        </div>
+        <div className="broadcast-card-titles">
+          <h3 className="broadcast-card-title">שליחת התראה לכלל המשתמשים</h3>
+          <p className="broadcast-card-sub">הודעה אחת — נשלחת מיד לכל מי שהפעיל התראות.</p>
+        </div>
+        <span
+          className={`broadcast-pill ${subscribers === 0 ? 'is-empty' : ''}`}
+          title="מנויי התראות פעילים"
+        >
+          <span className="broadcast-pill-dot" aria-hidden />
+          <span className="broadcast-pill-count">{subscribers}</span>
+          <span className="broadcast-pill-label">מנויים</span>
+        </span>
+      </div>
+
+      <div className="broadcast-field">
+        <label className="broadcast-label">
+          <span>כותרת</span>
+          <span className="broadcast-counter">{title.length}/80</span>
+        </label>
+        <input
+          type="text"
+          className="broadcast-input"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          maxLength={80}
+          placeholder="לדוגמה: תזכורת — הגיע הזמן לשייק"
+        />
+      </div>
+
+      <div className="broadcast-field">
+        <label className="broadcast-label">
+          <span>תוכן</span>
+          <span className="broadcast-counter">{body.length}/300</span>
+        </label>
+        <textarea
+          className="broadcast-input broadcast-textarea"
+          value={body}
+          onChange={e => setBody(e.target.value)}
+          maxLength={300}
+          rows={3}
+          placeholder="הודעה קצרה (עד 300 תווים)"
+        />
+      </div>
+
+      <div className="broadcast-field">
+        <label className="broadcast-label">
+          <span>קישור <span className="broadcast-optional">(אופציונלי)</span></span>
+        </label>
+        <input
+          type="text"
+          className="broadcast-input"
+          value={url}
+          onChange={e => setUrl(e.target.value)}
+          placeholder="/ — ריק יפתח את העמוד הראשי"
+          dir="ltr"
+        />
+      </div>
+
+      {subscribers === 0 && (
+        <div className="broadcast-hint">
+          עדיין אין מנויים שהפעילו התראות. כל משתמש מפעיל בעצמו דרך עמוד הפרופיל.
+        </div>
+      )}
+
+      <button
+        type="button"
+        className="broadcast-send"
+        onClick={send}
+        disabled={!canSend}
+      >
+        {busy
+          ? 'שולח…'
+          : subscribers === 0
+            ? 'אין מנויים עדיין'
+            : `שלח ל-${subscribers} ${subscribers === 1 ? 'מנוי' : 'מנויים'}`}
+      </button>
+
+      {feedback && (
+        <div className={`broadcast-feedback is-${feedback.type}`}>
+          {feedback.text}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function BellIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+    </svg>
   )
 }
 

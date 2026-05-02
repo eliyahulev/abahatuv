@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore'
+import { getMessaging, isSupported as isMessagingSupported } from 'firebase/messaging'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -25,3 +26,14 @@ export const db = initializeFirestore(app, {
 
 export const auth = getAuth(app)
 export const googleProvider = new GoogleAuthProvider()
+
+export const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY
+
+export async function getMessagingIfSupported() {
+  try {
+    if (await isMessagingSupported()) return getMessaging(app)
+  } catch {
+    // ignore — getMessaging throws on unsupported browsers (older Safari, etc.)
+  }
+  return null
+}

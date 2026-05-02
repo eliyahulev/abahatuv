@@ -332,11 +332,11 @@ function NotificationsCard() {
     <div className="card">
       <h3 className="card-title">התראות</h3>
       {status === 'granted' ? (
-        <p className="muted" style={{ margin: 0 }}>התראות פעילות. תקבלו עדכונים מצביקה כשיישלחו.</p>
+        <p className="muted" style={{ margin: 0 }}>התראות פעילות. תקבלו עדכונים  לכשיישלחו.</p>
       ) : (
         <>
           <p className="muted" style={{ marginTop: 0 }}>
-            הפעילו התראות כדי לקבל עדכונים, תזכורות ומסרים מצביקה ישירות למכשיר.
+            הפעילו התראות כדי לקבל עדכונים, תזכורות ומסרים  ישירות למכשיר.
           </p>
           <button
             type="button"

@@ -7,21 +7,23 @@ const appDir = path.join(__dirname, '..')
 const envPath = path.join(appDir, '.env.local')
 const outPath = path.join(appDir, 'public', 'firebase-messaging-sw.js')
 
-if (!fs.existsSync(envPath)) {
-  console.error('Missing .env.local — copy .env.local.example and fill in the Firebase web config.')
-  process.exit(1)
-}
+const fileEnv = fs.existsSync(envPath)
+  ? Object.fromEntries(
+      fs.readFileSync(envPath, 'utf8')
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l && !l.startsWith('#') && l.includes('='))
+        .map(l => {
+          const i = l.indexOf('=')
+          return [l.slice(0, i).trim(), l.slice(i + 1).trim()]
+        })
+    )
+  : {}
 
-const env = Object.fromEntries(
-  fs.readFileSync(envPath, 'utf8')
-    .split('\n')
-    .map(l => l.trim())
-    .filter(l => l && !l.startsWith('#') && l.includes('='))
-    .map(l => {
-      const i = l.indexOf('=')
-      return [l.slice(0, i).trim(), l.slice(i + 1).trim()]
-    })
-)
+// Prefer .env.local for local dev; fall back to process.env for CI/CD (Vercel, etc.)
+const env = new Proxy({}, {
+  get: (_, key) => fileEnv[key] || process.env[key]
+})
 
 const required = [
   'VITE_FIREBASE_API_KEY',
@@ -33,7 +35,22 @@ const required = [
 ]
 const missing = required.filter(k => !env[k])
 if (missing.length) {
-  console.error('Missing env vars in .env.local:', missing.join(', '))
+  // Don't hard-fail on Vercel preview deploys without env: emit a stub SW so
+  // the build still succeeds. Push won't work without the env, but the rest
+  // of the app will. Real deploys must have the env vars set.
+  if (process.env.VERCEL || process.env.CI) {
+    console.warn(
+      'Firebase env not set in CI — writing a stub firebase-messaging-sw.js (push will be inert).',
+      'Missing:',
+      missing.join(', ')
+    )
+    fs.writeFileSync(
+      outPath,
+      '// Stub: Firebase env vars were not present at build time. Push notifications are disabled.\nself.addEventListener("install", () => self.skipWaiting())\nself.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()))\n'
+    )
+    process.exit(0)
+  }
+  console.error('Missing env vars (checked .env.local + process.env):', missing.join(', '))
   process.exit(1)
 }
 

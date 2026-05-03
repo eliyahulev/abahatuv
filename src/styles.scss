@@ -1792,6 +1792,8 @@ select {
   font-size: 14px;
   font-weight: 700;
   color: var(--gray-800);
+  overflow-wrap: anywhere;
+  line-height: 1.2;
 
   &.up {
     color: var(--accent-red);

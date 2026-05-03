@@ -2,7 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db, auth } from '../lib/firebase'
 import { getProgramProgress } from '../lib/programProgress'
+import { getTasksForWeek } from '../lib/weekTasks'
+import { trainingPlans } from '../data/training'
+import { todayKey } from '../hooks/useLocalStorage'
+import { GOAL_CUPS, formatLiters } from './WaterTracker'
 import { ViewTitle, UserIcon } from '../icons'
+
+const LITERS_PER_CUP = 0.25
 
 const AVATAR_PALETTE = [
   '#0070ea', '#48bb78', '#d69e2e', '#9f7aea',
@@ -107,6 +113,7 @@ export default function SuperAdmin() {
   }, [])
 
   const rows = useMemo(() => {
+    const today = todayKey()
     return users.map(u => {
       const prog = getProgramProgress(u.startDate)
       const weights = (u.weights || []).slice().sort((a, b) => String(a.date).localeCompare(String(b.date)))
@@ -115,7 +122,26 @@ export default function SuperAdmin() {
       const delta = (typeof first === 'number' && typeof last === 'number')
         ? +(last - first).toFixed(1)
         : null
-      return { ...u, prog, first, last, delta, weightCount: weights.length }
+      const waterCups = (u.waterLog && u.waterLog[today]) || 0
+      const planId = u.trainingPlan || null
+      const planTitle = (planId && trainingPlans[planId]?.short) || null
+      const taskList = getTasksForWeek(prog.currentWeek)
+      const todayDone = (u.tasks && u.tasks[today]) || {}
+      const tasksDone = taskList.reduce((n, t) => n + (todayDone[t.id] ? 1 : 0), 0)
+      const tasksTotal = taskList.length
+      return {
+        ...u,
+        prog,
+        first,
+        last,
+        delta,
+        weightCount: weights.length,
+        waterCups,
+        planId,
+        planTitle,
+        tasksDone,
+        tasksTotal
+      }
     }).sort((a, b) => {
       if (a.prog.hasStarted !== b.prog.hasStarted) return a.prog.hasStarted ? -1 : 1
       if (a.prog.hasStarted) return (b.prog.daysIn || 0) - (a.prog.daysIn || 0)
@@ -361,8 +387,22 @@ function AdminRow({ u }) {
           <div className="admin-stat-v">{u.weightCount || 0}</div>
         </div>
         <div className="admin-stat">
-          <div className="admin-stat-k">מין</div>
-          <div className="admin-stat-v">{u.gender === 'female' ? 'נקבה' : u.gender === 'male' ? 'זכר' : '—'}</div>
+          <div className="admin-stat-k">מים היום</div>
+          <div className="admin-stat-v">
+            {formatLiters(u.waterCups * LITERS_PER_CUP)}/{formatLiters(GOAL_CUPS * LITERS_PER_CUP)} ל׳
+          </div>
+        </div>
+        <div className="admin-stat">
+          <div className="admin-stat-k">תוכנית</div>
+          <div className="admin-stat-v" title={u.planId ? (trainingPlans[u.planId]?.title || u.planId) : ''}>
+            {u.planTitle || '—'}
+          </div>
+        </div>
+        <div className="admin-stat">
+          <div className="admin-stat-k">משימות היום</div>
+          <div className="admin-stat-v">
+            {u.tasksTotal > 0 ? `${u.tasksDone}/${u.tasksTotal}` : '—'}
+          </div>
         </div>
       </div>
       {u.startDate && (

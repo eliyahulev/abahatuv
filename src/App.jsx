@@ -19,8 +19,12 @@ import OnboardingWizard from './components/OnboardingWizard'
 import InstallAppButton from './components/InstallAppButton'
 import LoginScreen from './components/LoginScreen'
 import NewWeekModal from './components/NewWeekModal'
+import NotificationPrompt from './components/NotificationPrompt'
 import { TabIcon, UserIcon, MenuIcon, XIcon, SosIcon, BookIcon } from './icons'
 import { isAdmin } from './lib/admin'
+import { pushSupportStatus } from './lib/messaging'
+
+const NOTIF_PROMPT_KEY = 'milufit:notifPromptShown'
 
 const TABS = [
   { id: 'home',     label: 'בית' },
@@ -73,6 +77,19 @@ function AppAuthed() {
   const [openGuideId, setOpenGuideId] = useState(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [showNotifPrompt, setShowNotifPrompt] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (pushSupportStatus() !== 'default') return
+    if (localStorage.getItem(NOTIF_PROMPT_KEY)) return
+    setShowNotifPrompt(true)
+  }, [])
+
+  const dismissNotifPrompt = () => {
+    try { localStorage.setItem(NOTIF_PROMPT_KEY, '1') } catch { /* ignore */ }
+    setShowNotifPrompt(false)
+  }
 
   const { hasStarted, daysIn, daysUntilStart, currentWeek } =
     getProgramProgress(startDate)
@@ -295,6 +312,10 @@ function AppAuthed() {
             navigate('weeks')
           }}
         />
+      )}
+
+      {showNotifPrompt && !showNewWeek && (
+        <NotificationPrompt onClose={dismissNotifPrompt} />
       )}
     </div>
   )

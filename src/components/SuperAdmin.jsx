@@ -143,9 +143,11 @@ export default function SuperAdmin() {
         tasksTotal
       }
     }).sort((a, b) => {
+      const aLast = new Date(a.lastLoginAt || 0).getTime() || 0
+      const bLast = new Date(b.lastLoginAt || 0).getTime() || 0
+      if (aLast !== bLast) return bLast - aLast
       if (a.prog.hasStarted !== b.prog.hasStarted) return a.prog.hasStarted ? -1 : 1
-      if (a.prog.hasStarted) return (b.prog.daysIn || 0) - (a.prog.daysIn || 0)
-      return String(b.lastLoginAt || '').localeCompare(String(a.lastLoginAt || ''))
+      return (b.prog.daysIn || 0) - (a.prog.daysIn || 0)
     })
   }, [users])
 

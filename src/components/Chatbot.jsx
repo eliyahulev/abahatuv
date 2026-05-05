@@ -150,7 +150,7 @@ export default function Chatbot() {
     <div className="view chatbot-view">
       <ViewTitle Icon={ChatIcon}>שאל את מילופיט</ViewTitle>
       <div className="chatbot-subtitle-row">
-        <p className="view-subtitle" style={{ margin: 0 }}>שואל ועונה על בסיס המדריך</p>
+        <p className="view-subtitle" style={{ margin: 0 }}>שו״ת חכם הרזימות</p>
         {hasConversation && (
           <button type="button" className="chatbot-new-btn" onClick={startNewChat} disabled={busy}>
             צ'אט חדש

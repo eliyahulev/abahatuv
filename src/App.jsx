@@ -11,6 +11,7 @@ import FoodLists from './components/FoodLists'
 import EatingWindow from './components/EatingWindow'
 import Emergency from './components/Emergency'
 import Guides from './components/Guides'
+import Chatbot from './components/Chatbot'
 import SuperAdmin from './components/SuperAdmin'
 import MiluFitShake from './components/MiluFitShake'
 import Training from './components/Training'
@@ -20,7 +21,7 @@ import InstallAppButton from './components/InstallAppButton'
 import LoginScreen from './components/LoginScreen'
 import NewWeekModal from './components/NewWeekModal'
 import NotificationPrompt from './components/NotificationPrompt'
-import { TabIcon, UserIcon, MenuIcon, XIcon, SosIcon, BookIcon } from './icons'
+import { TabIcon, UserIcon, MenuIcon, XIcon, SosIcon, BookIcon, ChatIcon } from './icons'
 import { isAdmin } from './lib/admin'
 import { pushSupportStatus } from './lib/messaging'
 
@@ -180,6 +181,15 @@ function AppAuthed() {
         </button>
         <button
           type="button"
+          className={`chatbot-btn-header ${tab === 'chatbot' ? 'active' : ''}`}
+          onClick={() => navigate(tab === 'chatbot' ? 'home' : 'chatbot')}
+          aria-label="שאל את מילופיט"
+          title="שאל את מילופיט"
+        >
+          <ChatIcon size={16} />
+        </button>
+        <button
+          type="button"
           className="menu-btn-header"
           onClick={() => setMenuOpen(true)}
           aria-label="תפריט"
@@ -276,6 +286,7 @@ function AppAuthed() {
         <Guides openId={openGuideId} setOpenId={setOpenGuideId} />
       )}
       {tab === 'sos' && <Emergency />}
+      {tab === 'chatbot' && <Chatbot />}
       {tab === 'admin' && isAdmin(user) && <SuperAdmin />}
       {tab === 'shake' && <MiluFitShake />}
       {tab === 'training' && <Training />}

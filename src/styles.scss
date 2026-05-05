@@ -1051,10 +1051,9 @@ select {
 }
 .water-bars {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: space-between;
   gap: 6px;
-  height: 100px;
 }
 .water-bar-col {
   flex: 1;
@@ -1062,6 +1061,12 @@ select {
   flex-direction: column;
   align-items: center;
   gap: 4px;
+}
+.water-bar-track {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: flex-end;
 }
 .water-bar {
   width: 100%;

@@ -272,11 +272,13 @@ export default function WaterTracker() {
             const isToday = d.key === date
             return (
               <div key={d.key} className="water-bar-col">
-                <div
-                  className={`water-bar ${isToday ? 'today' : ''}`}
-                  style={{ height: `${h}%` }}
-                  title={`${formatLiters(count * LITERS_PER_CUP)} ל׳`}
-                />
+                <div className="water-bar-track">
+                  <div
+                    className={`water-bar ${isToday ? 'today' : ''}`}
+                    style={{ height: `${h}%` }}
+                    title={`${formatLiters(count * LITERS_PER_CUP)} ל׳`}
+                  />
+                </div>
                 <div className="water-bar-label">{d.label}</div>
                 <div className="water-bar-label" style={{ fontWeight: 600 }}>
                   {formatLiters(count * LITERS_PER_CUP)}

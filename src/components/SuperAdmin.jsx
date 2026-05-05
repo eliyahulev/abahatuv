@@ -92,6 +92,7 @@ function Avatar({ photoURL, name, seed }) {
 
 export default function SuperAdmin() {
   const [users, setUsers] = useState([])
+  const [chats, setChats] = useState([])
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState(null)
 
@@ -99,9 +100,13 @@ export default function SuperAdmin() {
     let cancelled = false
     ;(async () => {
       try {
-        const snap = await getDocs(collection(db, 'users'))
+        const [usersSnap, chatsSnap] = await Promise.all([
+          getDocs(collection(db, 'users')),
+          getDocs(collection(db, 'chats')).catch(() => ({ docs: [] }))
+        ])
         if (cancelled) return
-        setUsers(snap.docs.map(d => ({ uid: d.id, ...d.data() })))
+        setUsers(usersSnap.docs.map(d => ({ uid: d.id, ...d.data() })))
+        setChats(chatsSnap.docs.map(d => ({ id: d.id, ...d.data() })))
         setStatus('ready')
       } catch (e) {
         if (cancelled) return
@@ -111,6 +116,24 @@ export default function SuperAdmin() {
     })()
     return () => { cancelled = true }
   }, [])
+
+  const chatsByUid = useMemo(() => {
+    const map = new Map()
+    for (const c of chats) {
+      if (!c.uid) continue
+      const list = map.get(c.uid) || []
+      list.push(c)
+      map.set(c.uid, list)
+    }
+    for (const list of map.values()) {
+      list.sort((a, b) => {
+        const at = (a.updatedAt?.toMillis?.() || 0)
+        const bt = (b.updatedAt?.toMillis?.() || 0)
+        return bt - at
+      })
+    }
+    return map
+  }, [chats])
 
   const rows = useMemo(() => {
     const today = todayKey()
@@ -183,7 +206,7 @@ export default function SuperAdmin() {
       <p className="view-subtitle">{rows.length} משתמשים</p>
       <BroadcastCard subscribers={subscribers} />
       <div className="admin-list">
-        {rows.map(u => <AdminRow key={u.uid} u={u} />)}
+        {rows.map(u => <AdminRow key={u.uid} u={u} chats={chatsByUid.get(u.uid) || []} />)}
       </div>
     </div>
   )
@@ -330,7 +353,75 @@ function BellIcon() {
   )
 }
 
-function AdminRow({ u }) {
+function ChatsSection({ chats }) {
+  const [open, setOpen] = useState(false)
+  const [openIds, setOpenIds] = useState(() => new Set())
+
+  if (!chats || chats.length === 0) return null
+
+  const toggleChat = (id) => {
+    setOpenIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id); else next.add(id)
+      return next
+    })
+  }
+
+  const fmtDate = (ts) => {
+    const ms = ts?.toMillis?.()
+    if (!ms) return ''
+    return new Date(ms).toLocaleString('he-IL')
+  }
+
+  const totalTurns = chats.reduce((n, c) => n + Math.floor((c.messages || []).length / 2), 0)
+
+  return (
+    <div className="admin-chats">
+      <button
+        type="button"
+        className="admin-chats-toggle"
+        onClick={() => setOpen(o => !o)}
+      >
+        {open ? 'הסתר' : 'הצג'} צ'אטים ({chats.length} שיחות, {totalTurns} שאלות)
+      </button>
+      {open && (
+        <div className="admin-chats-list">
+          {chats.map(chat => {
+            const msgs = chat.messages || []
+            const firstUser = msgs.find(m => m.role === 'user')
+            const preview = firstUser?.content?.slice(0, 60) || '(ריק)'
+            const isOpen = openIds.has(chat.id)
+            return (
+              <div key={chat.id} className="admin-chat">
+                <button
+                  type="button"
+                  className="admin-chat-head"
+                  onClick={() => toggleChat(chat.id)}
+                >
+                  <span className="admin-chat-preview">{preview}</span>
+                  <span className="admin-chat-meta">
+                    {Math.floor(msgs.length / 2)} שאלות · {fmtDate(chat.updatedAt)}
+                  </span>
+                </button>
+                {isOpen && (
+                  <div className="admin-chat-body">
+                    {msgs.map((m, i) => (
+                      <div key={i} className={`admin-chat-msg is-${m.role}`}>
+                        <div className="admin-chat-bubble">{m.content}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function AdminRow({ u, chats }) {
   const { hasStarted, currentWeek, daysIn, daysUntilStart } = u.prog
 
   let weekLabel
@@ -412,6 +503,7 @@ function AdminRow({ u }) {
           התחלה: {new Date(u.startDate).toLocaleDateString('he-IL')}
         </div>
       )}
+      <ChatsSection chats={chats} />
     </div>
   )
 }

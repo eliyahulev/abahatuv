@@ -7,7 +7,7 @@ const CHATBOT_URL = import.meta.env.VITE_CHATBOT_URL
 const INITIAL_BOT_GREETING =
   'שלום! אני העוזר של מילופיט. אפשר לשאול אותי על התוכנית, התזונה, האימונים והצומות. במה אפשר לעזור?'
 
-async function streamChat({ messages, onDelta, onError }) {
+async function streamChat({ messages, chatId, onDelta, onError }) {
   if (!CHATBOT_URL) {
     onError('הצ׳אטבוט עדיין לא הוגדר. יש להגדיר את VITE_CHATBOT_URL ולפרוס את ה-Cloud Function.')
     return
@@ -25,7 +25,7 @@ async function streamChat({ messages, onDelta, onError }) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${idToken}`
     },
-    body: JSON.stringify({ messages })
+    body: JSON.stringify({ messages, chatId })
   })
 
   if (!resp.ok) {
@@ -61,14 +61,28 @@ async function streamChat({ messages, onDelta, onError }) {
   }
 }
 
+function newChatId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
+  return 'c-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10)
+}
+
 export default function Chatbot() {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: INITIAL_BOT_GREETING }
   ])
+  const [chatId, setChatId] = useState(null)
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const scrollRef = useRef(null)
+
+  const startNewChat = () => {
+    if (busy) return
+    setMessages([{ role: 'assistant', content: INITIAL_BOT_GREETING }])
+    setChatId(null)
+    setInput('')
+    setError(null)
+  }
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -86,6 +100,9 @@ export default function Chatbot() {
     setInput('')
     setBusy(true)
 
+    const cid = chatId || newChatId()
+    if (!chatId) setChatId(cid)
+
     const history = next
       .filter(m => !(m.role === 'assistant' && m.content === INITIAL_BOT_GREETING))
       .filter((m, i, arr) => !(m.role === 'assistant' && m.content === '' && i === arr.length - 1))
@@ -93,6 +110,7 @@ export default function Chatbot() {
     try {
       await streamChat({
         messages: history,
+        chatId: cid,
         onDelta: (delta) => {
           setMessages(prev => {
             const copy = prev.slice()
@@ -126,10 +144,19 @@ export default function Chatbot() {
     }
   }
 
+  const hasConversation = messages.some(m => m.role === 'user')
+
   return (
     <div className="view chatbot-view">
       <ViewTitle Icon={ChatIcon}>שאל את מילופיט</ViewTitle>
-      <p className="view-subtitle">שואל ועונה על בסיס המדריך</p>
+      <div className="chatbot-subtitle-row">
+        <p className="view-subtitle" style={{ margin: 0 }}>שואל ועונה על בסיס המדריך</p>
+        {hasConversation && (
+          <button type="button" className="chatbot-new-btn" onClick={startNewChat} disabled={busy}>
+            צ'אט חדש
+          </button>
+        )}
+      </div>
 
       <div className="chatbot-thread" ref={scrollRef}>
         {messages.map((m, i) => (

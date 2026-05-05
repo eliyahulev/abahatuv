@@ -3435,6 +3435,30 @@ select {
   flex-direction: column;
 }
 
+.chatbot-subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.chatbot-new-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--gray-300, #cbd5e0);
+  border-radius: 999px;
+  background: white;
+  color: var(--gray-700, #4a5568);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .chatbot-thread {
   flex: 1;
   min-height: 360px;
@@ -3547,5 +3571,106 @@ select {
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+// ----- Admin chats viewer -----
+
+.admin-chats {
+  margin-top: 12px;
+  border-top: 1px dashed var(--gray-200, #e2e8f0);
+  padding-top: 10px;
+}
+
+.admin-chats-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--purple-700, #553c9a);
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}
+
+.admin-chats-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-chat {
+  border: 1px solid var(--gray-200, #e2e8f0);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: white;
+}
+
+.admin-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--gray-50, #f7fafc);
+  border: none;
+  cursor: pointer;
+  text-align: right;
+
+  &:hover { background: var(--gray-100, #edf2f7); }
+}
+
+.admin-chat-preview {
+  font-size: 13px;
+  color: var(--gray-800, #2d3748);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-chat-meta {
+  font-size: 11px;
+  color: var(--gray-500, #a0aec0);
+  white-space: nowrap;
+}
+
+.admin-chat-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: white;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.admin-chat-msg {
+  display: flex;
+  &.is-user { justify-content: flex-start; }
+  &.is-assistant { justify-content: flex-end; }
+}
+
+.admin-chat-bubble {
+  max-width: 85%;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  .is-user & {
+    background: var(--purple-100, #e9d8fd);
+    color: var(--gray-900, #1a202c);
+    border-bottom-right-radius: 3px;
+  }
+  .is-assistant & {
+    background: var(--gray-100, #edf2f7);
+    color: var(--gray-900, #1a202c);
+    border-bottom-left-radius: 3px;
   }
 }

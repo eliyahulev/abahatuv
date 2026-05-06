@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0070EA" />
+    <meta name="description" content="מילופיט — מעקב שבועות, מים, מתכונים ועוד" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+    <title>מילופיט</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+      .app-boot-loader {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        font-family: 'Heebo', system-ui, sans-serif;
+        color: #0059BB;
+        background: linear-gradient(135deg, #F0F7FF 0%, #F7FAFC 100%);
+      }
+      .app-boot-loader-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #C7E3F8;
+        border-top-color: #0070EA;
+        border-radius: 50%;
+        animation: app-boot-spin 0.75s linear infinite;
+      }
+      @keyframes app-boot-spin {
+        to { transform: rotate(360deg); }
+      }
+      .app-boot-loader-text { font-size: 15px; font-weight: 500; }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="app-boot-loader" role="status" aria-live="polite">
+        <div class="app-boot-loader-spinner" aria-hidden="true"></div>
+        <span class="app-boot-loader-text">טוען…</span>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1951,16 +1951,6 @@ select {
   text-overflow: ellipsis;
 }
 
-.admin-card-email {
-  font-size: 12px;
-  color: var(--gray-600);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  direction: ltr;
-  text-align: start;
-}
-
 .admin-card-week {
   padding: 4px 10px;
   background: var(--purple-50);

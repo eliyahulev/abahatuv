@@ -437,12 +437,11 @@ function AdminRow({ u, chats }) {
       <div className="admin-card-head">
         <Avatar
           photoURL={u.photoURL}
-          name={u.name || u.authDisplayName || u.email}
+          name={u.authDisplayName || u.name}
           seed={u.uid}
         />
         <div className="admin-card-id">
-          <div className="admin-card-name">{u.name || u.authDisplayName || '(ללא שם)'}</div>
-          {u.email && <div className="admin-card-email">{u.email}</div>}
+          <div className="admin-card-name">{u.authDisplayName || u.name || '(ללא שם)'}</div>
         </div>
         <div className="admin-card-week">{weekLabel}</div>
       </div>

@@ -2,6 +2,11 @@ import { daysBetween } from '../hooks/useLocalStorage'
 
 const TOTAL_WEEKS = 8
 
+// The program day rolls over this many hours before local midnight, so
+// users who interact with the app late in the evening (e.g. logging the
+// last meal of the day) already see the next week's content unlocked.
+const ROLLOVER_HOURS_BEFORE_MIDNIGHT = 4
+
 // Single source of truth for "where is the user in the 8-week program?".
 // Takes the persisted ISO startDate and (optionally) a Date acting as
 // "today", and returns every derived value the UI needs:
@@ -26,7 +31,11 @@ export function getProgramProgress(startDate, today = new Date()) {
     }
   }
 
-  const rawDays = daysBetween(startDate, today)
+  // Shift "today" forward by 4 hours so the program day counter advances
+  // at 20:00 local instead of midnight. daysBetween itself stays a pure
+  // calendar-day function (used elsewhere for water log keys etc.).
+  const shifted = new Date(today.getTime() + ROLLOVER_HOURS_BEFORE_MIDNIGHT * 60 * 60 * 1000)
+  const rawDays = daysBetween(startDate, shifted)
   const hasStarted = rawDays >= 0
   const daysIn = Math.max(0, rawDays)
   const daysUntilStart = Math.max(0, -rawDays)

@@ -258,6 +258,7 @@ function AppAuthed() {
           name={name}
           hasStarted={hasStarted}
           daysUntilStart={daysUntilStart}
+          daysIn={daysIn}
           onNavigate={navigate}
         />
       )}

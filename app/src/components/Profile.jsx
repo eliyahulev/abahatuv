@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { todayKey, daysBetween } from '../hooks/useLocalStorage'
+import { todayKey } from '../hooks/useLocalStorage'
+import { getProgramProgress } from '../lib/programProgress'
 import { useUserField, useResetData } from '../hooks/useUserData'
 import { calcBmi, bmiCategory, formatBmi } from '../data/bmi'
 import { CalendarIcon, DnaIcon, TargetIcon, TrophyIcon } from '../icons'
@@ -48,7 +49,7 @@ export default function Profile({ startDate, gender, name, currentWeek, onNaviga
   const bmi = latest && height ? calcBmi(latest.value, height) : null
   const cat = bmi != null ? bmiCategory(bmi) : null
 
-  const totalDays = startDate ? daysBetween(startDate) + 1 : 0
+  const totalDays = startDate ? getProgramProgress(startDate).daysIn + 1 : 0
 
   const addWeight = () => {
     const v = Number(newValue)

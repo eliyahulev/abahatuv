@@ -74,4 +74,19 @@ describe('getProgramProgress — once the user has started', () => {
     expect(p.currentWeek).toBe(8)
     expect(p.dayOfWeek).toBe(1)
   })
+
+  it('rolls to the next day at 20:00 local (4 hours before midnight)', () => {
+    const startDate = '2026-04-24'
+    // 19:59 local on day 6 -> still day 6 (week 1, day 7)
+    const justBefore = getProgramProgress(startDate, new Date('2026-04-30T19:59:00'))
+    expect(justBefore.daysIn).toBe(6)
+    expect(justBefore.currentWeek).toBe(1)
+    expect(justBefore.dayOfWeek).toBe(7)
+
+    // 20:00 local on day 6 -> already day 7 (week 2, day 1)
+    const atRollover = getProgramProgress(startDate, new Date('2026-04-30T20:00:00'))
+    expect(atRollover.daysIn).toBe(7)
+    expect(atRollover.currentWeek).toBe(2)
+    expect(atRollover.dayOfWeek).toBe(1)
+  })
 })

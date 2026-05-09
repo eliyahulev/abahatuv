@@ -5,7 +5,7 @@ import { WaterWidget, formatLiters, GOAL_CUPS } from './WaterTracker'
 import DailyChecklist from './DailyChecklist'
 import { getTasksForWeek } from '../lib/weekTasks'
 import { getStreak } from '../lib/waterStreak'
-import { todayKey, daysBetween, startsInLabel } from '../hooks/useLocalStorage'
+import { todayKey, startsInLabel } from '../hooks/useLocalStorage'
 import { useUserField, useUserMapEntry } from '../hooks/useUserData'
 import { phrasesFor, getPhraseForDay } from '../data/motivation'
 
@@ -51,14 +51,12 @@ function timeGreeting() {
   return 'לילה טוב'
 }
 
-export default function Dashboard({ currentWeek, startDate, gender, name, hasStarted = true, daysUntilStart = 0, onNavigate }) {
+export default function Dashboard({ currentWeek, startDate, gender, name, hasStarted = true, daysUntilStart = 0, daysIn = 0, onNavigate }) {
   const [waterLog] = useUserField('waterLog', {})
   const [tasksDone] = useUserMapEntry('tasks', todayKey(), {})
 
   const week = weeks.find(w => w.number === currentWeek) || weeks[0]
-  const dayOfWeek = hasStarted && startDate
-    ? (daysBetween(startDate) % 7) + 1
-    : 1
+  const dayOfWeek = hasStarted && startDate ? (daysIn % 7) + 1 : 1
   const streak = getStreak(waterLog, GOAL_CUPS)
 
   const weekTasks = hasStarted ? getTasksForWeek(currentWeek) : []

@@ -16,6 +16,7 @@ import SuperAdmin from './components/SuperAdmin'
 import MiluFitShake from './components/MiluFitShake'
 import Training from './components/Training'
 import Profile from './components/Profile'
+import Disclaimer from './components/Disclaimer'
 import OnboardingWizard from './components/OnboardingWizard'
 import InstallAppButton from './components/InstallAppButton'
 import LoginScreen from './components/LoginScreen'
@@ -246,6 +247,18 @@ function AppAuthed() {
                 onActivate={() => setMenuOpen(false)}
               />
             </nav>
+            <div className="drawer-footer">
+              <button
+                type="button"
+                className={`drawer-footer-link ${tab === 'disclaimer' ? 'active' : ''}`}
+                onClick={() => {
+                  setMenuOpen(false)
+                  navigate('disclaimer')
+                }}
+              >
+                תנאי שימוש וכתב ויתור משפטי
+              </button>
+            </div>
           </aside>
         </div>
       )}
@@ -291,6 +304,7 @@ function AppAuthed() {
       {tab === 'admin' && isAdmin(user) && <SuperAdmin />}
       {tab === 'shake' && <MiluFitShake />}
       {tab === 'training' && <Training />}
+      {tab === 'disclaimer' && <Disclaimer />}
       {tab === 'profile' && (
         <Profile
           startDate={startDate}
